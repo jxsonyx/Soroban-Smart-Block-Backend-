@@ -9,6 +9,9 @@ import { simulateRouter } from './simulate';
 import { verifyRouter } from './verify';
 import { dexRouter } from './dex';
 import { nftRouter } from './nft';
+import { storageRouter } from './storage';
+import { exportsRouter } from './exports';
+import { signersRouter } from './signers';
 
 export const router = Router();
 
@@ -22,3 +25,6 @@ router.use('/simulate', simulateRouter);
 router.use('/verify', verifyRouter);
 router.use('/dex', dexRouter);
 router.use('/nft', nftRouter);
+router.use('/storage', storageRouter);
+router.use('/exports', exportsRouter);
+router.use('/signers', signersRouter);
