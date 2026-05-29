@@ -6,6 +6,7 @@ import { broadcastEvent } from '../ws/eventBroadcaster';
 import { broadcastSSEEvent } from '../api/sse';
 import { barrierUpsertContract, barrierUpsertEvent } from './writeBarrier';
 import { getWhaleWatcher } from './whaleWatcher';
+import { dispatchWebhooks } from '../webhooks/dispatcher';
 
 /**
  * Parse DiagnosticEvents from a raw TransactionMeta XDR (base64).
@@ -152,5 +153,10 @@ async function storeEvent(event: LedgerEvent): Promise<number> {
 
   broadcastEvent(broadcastPayload);
   broadcastSSEEvent(broadcastPayload);
+
+  dispatchWebhooks({ ...broadcastPayload, topicSymbol }).catch((err) =>
+    console.error('[webhook] dispatch error:', err),
+  );
+
   return 1;
 }
