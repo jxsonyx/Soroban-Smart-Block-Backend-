@@ -3,7 +3,6 @@ import { prismaWrite as prisma } from '../db';
 import { config } from '../config';
 import { fetchEvents, getLatestLedger, getRpcWebsocketUrl, getTransaction, type LedgerEvent } from './rpc';
 import { decodeTransaction, decodeEvent } from './decoder';
-import { getLatestLedger, getRpcWebsocketUrl } from './rpc';
 import { processLedgerRange } from './ledgerProcessor';
 
 const BATCH = config.indexerBatchSize;
