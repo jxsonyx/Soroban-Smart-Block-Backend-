@@ -22,6 +22,7 @@ import { webhooksRouter } from './webhooks';
 import { analyticsRouter } from './analytics';
 import { portfolioRouter } from './portfolio';
 import { exportsRouter } from './exports';
+import { syncStateRouter } from './sync-state';
 
 export const router = Router();
 
@@ -47,4 +48,4 @@ router.use('/webhooks', webhooksRouter);
 router.use('/analytics', analyticsRouter);
 router.use('/portfolio', portfolioRouter);
 router.use('/exports', exportsRouter);
-router.use('/i18n', i18nRouter);
+router.use('/sync-state', syncStateRouter);
