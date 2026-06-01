@@ -5,13 +5,23 @@
   "main": "dist/index.js",
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
+    "dev:testnet": "STELLAR_NETWORK=testnet ts-node-dev --respawn --transpile-only src/index.ts",
+    "dev:mainnet": "STELLAR_NETWORK=mainnet ts-node-dev --respawn --transpile-only src/index.ts",
+    "dev:devnet": "STELLAR_NETWORK=devnet ts-node-dev --respawn --transpile-only src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js",
+    "start:testnet": "STELLAR_NETWORK=testnet node dist/index.js",
+    "start:mainnet": "STELLAR_NETWORK=mainnet node dist/index.js",
+    "start:devnet": "STELLAR_NETWORK=devnet node dist/index.js",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:push": "prisma db push",
     "index": "ts-node src/indexer/run.ts",
+    "index:testnet": "STELLAR_NETWORK=testnet ts-node src/indexer/run.ts",
+    "index:mainnet": "STELLAR_NETWORK=mainnet ts-node src/indexer/run.ts",
+    "index:devnet": "STELLAR_NETWORK=devnet ts-node src/indexer/run.ts",
     "repair": "ts-node src/indexer/repair-run.ts",
+    "archive": "ts-node src/archival/run.ts",
     "seed": "ts-node prisma/seed.ts",
     "test": "vitest run"
   },
@@ -19,6 +29,7 @@
     "seed": "ts-node prisma/seed.ts"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "3.600.0",
     "@prisma/client": "^5.10.0",
     "@stellar/stellar-sdk": "^12.0.0",
     "axios": "^1.6.7",
@@ -35,6 +46,10 @@
     "ws": "^8.13.0",
     "zod": "^3.22.4"
   },
+  "optionalDependencies": {
+    "rate-limit-redis": "^4.2.0",
+    "redis": "^6.0.0"
+  },
   "devDependencies": {
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
@@ -45,7 +60,6 @@
     "@types/swagger-ui-express": "^4.1.7",
     "@types/ws": "^8.5.0",
     "prisma": "^5.10.0",
-    "redis": "^6.0.0",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.3.3",
     "vitest": "^1.4.0"

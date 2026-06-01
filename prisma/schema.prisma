@@ -82,6 +82,7 @@ model Transaction {
   failureReason   String?  // #49: human-readable failure explanation
   flashLoanAlert  Boolean  @default(false) // #137: flash loan attack detected
   reentrantAlert  Boolean  @default(false) // re-entrancy / drain attack detected
+  freezeViolation Boolean  @default(false) // CAP-0077: touches a consensus-frozen ledger key
   createdAt       DateTime @default(now())
 
   ledger   Ledger    @relation(fields: [ledgerSequence], references: [sequence])
@@ -111,6 +112,7 @@ model Event {
   decoded         Json?    // human-readable decoded event
   ledgerSequence  Int                      // FK → Ledger.sequence
   ledgerCloseTime DateTime
+  compacted       Boolean  @default(false) // #220: true once rolled into a SettlementBatchSummary
   createdAt       DateTime @default(now())
 
   ledger      Ledger      @relation(fields: [ledgerSequence], references: [sequence])
@@ -128,6 +130,8 @@ model Event {
   @@index([contractAddress, ledgerSequence, id])
   // Filter by contract + event type + ledger for time-range queries
   @@index([contractAddress, eventType, ledgerSequence])
+  // #220: compactor scan index
+  @@index([eventType, compacted, ledgerSequence])
 }
 
 // Custom event symbol → template bindings submitted by verified project creators
@@ -181,6 +185,134 @@ model ZkpVerificationEvent {
   @@index([contractAddress, ledgerSequence])
 }
 
+model SessionAuthorization {
+  id                String   @id @default(cuid())
+  eventId           String   @unique
+  contractAddress   String
+  hotSigner         String?
+  authorizationType String
+  startLedger       Int
+  expiryLedger      Int
+  allocatedBlocks   Int
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([contractAddress])
+  @@index([expiryLedger])
+}
+
+model OracleCallback {
+  id                        String   @id @default(cuid())
+  requestTransactionHash    String   @unique
+  fulfillmentTransactionHash String?
+  requestLedgerSequence     Int
+  fulfillmentLedgerSequence  Int?
+  requestTimestamp          DateTime
+  fulfillmentTimestamp      DateTime?
+  oracleContractAddress     String
+  dataRequestorAddress      String
+  roundTripLatencyBlocks    Int?
+  roundTripLatencyMs        Int?
+  status                    String
+  createdAt                 DateTime @default(now())
+  updatedAt                 DateTime @updatedAt
+
+  @@index([oracleContractAddress])
+  @@index([requestLedgerSequence])
+}
+
+model RwaComplianceEvent {
+  id                   String   @id @default(cuid())
+  transactionHash      String   @unique
+  ledgerSequence       Int
+  ledgerCloseTime      DateTime
+  assetContractAddress String
+  issuerAddress        String
+  targetAddress        String
+  amount               String?
+  complianceReason     String
+  humanStatement       String
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  @@index([assetContractAddress])
+  @@index([issuerAddress])
+  @@index([targetAddress])
+}
+
+model StateContention {
+  id              String   @id
+  ledgerSequence  Int
+  contractAddress String
+  stateKey        String
+  txHashes        String[]
+  conflictCount   Int
+  delayMs         Float
+  delayLabel      String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([ledgerSequence])
+  @@index([contractAddress])
+}
+
+model ContractFactory {
+  id                      String   @id @default(cuid())
+  parentContractAddress   String
+  childContractAddress    String
+  creationTransactionHash String
+  creationLedgerSequence  Int
+  creationTimestamp       DateTime
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+
+  @@unique([parentContractAddress, childContractAddress])
+  @@index([parentContractAddress])
+  @@index([childContractAddress])
+  @@index([creationLedgerSequence])
+}
+
+model ApiKey {
+  id         String   @id @default(cuid())
+  key        String   @unique
+  active     Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  lastUsedAt DateTime?
+}
+
+model ContractResourceMetric {
+  id               String   @id @default(cuid())
+  contractAddress  String
+  transactionHash  String
+  ledgerSequence   Int
+  ledgerCloseTime  DateTime
+  memoryUsageBytes Int
+  cpuInstructions  Int
+  storageFootprint Int
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@unique([contractAddress, transactionHash])
+  @@index([contractAddress])
+  @@index([ledgerSequence])
+}
+
+model SignatureInspection {
+  id               String   @id @default(cuid())
+  transactionHash  String   @unique
+  ledgerSequence   Int
+  curveType        String
+  isPasskey        Boolean
+  pubKeyX          String?
+  pubKeyY          String?
+  label            String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@index([transactionHash])
+  @@index([ledgerSequence])
+}
+
 model IndexerState {
   id         String   @id @default("singleton")
   lastLedger Int      @default(0)
@@ -206,6 +338,49 @@ model SacMapping {
   @@unique([assetCode, assetIssuer])
   @@index([sacAddress])
   @@index([assetCode])
+}
+
+// SAC G-Account Unlimited Trustline Mapper (CAP-0073)
+// Tracks trustlines on classic Stellar G-accounts that were initiated
+// by Soroban smart contracts (SAC) with unlimited or high-limit allowances.
+// Links each trustline to its originating transaction and the corresponding
+// classic ChangeTrustOp so the unified ledger stays coherent.
+model SacTrustlineMapping {
+  id                  String   @id @default(cuid())
+  // The classic G-account that holds the trustline
+  gAccount            String
+  // The SAC contract address that initiated the trustline (C-address)
+  sacAddress          String
+  // Classic asset identifiers (resolved via SacMapping)
+  assetCode           String
+  assetIssuer         String?
+  assetType           String   @default("credit_alphanum4")
+  // Trustline limit (string for BigInt precision)
+  trustlineLimit      String   @default("0")
+  // Flag: true if the trustline has no practical limit
+  isUnlimited         Boolean  @default(false)
+  // Trustline status
+  status              String   @default("active") // active | deactivated | frozen
+  // The Soroban transaction that created/modified the trustline
+  transactionHash     String
+  // The ledger where the trustline was created
+  ledgerSequence      Int
+  ledgerCloseTime     DateTime
+  // Link to the corresponding classic ChangeTrustOp ledger sequence
+  changeTrustOpLedger Int?     // null until a classic ChangeTrustOp is found
+  changeTrustOpTxHash String?  // hash of the classic ChangeTrustOp transaction
+  // Whether the trustline was discovered via CAP-0073 (Soroban-initiated) or classic
+  origin              String   @default("soroban") // "soroban" | "classic"
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  @@unique([gAccount, sacAddress])
+  @@index([gAccount])
+  @@index([sacAddress])
+  @@index([assetCode])
+  @@index([status])
+  @@index([ledgerSequence])
+  @@index([changeTrustOpLedger])
 }
 
 // AMM pool that uses one or more SAC-wrapped assets
@@ -542,6 +717,38 @@ model WebhookDelivery {
   @@index([eventId])
 }
 
+// BN254 ZK-Host function gas exemption tracker (CAP-0080)
+// Tracks transactions using native BN254 curve host functions and
+// calculates the gas savings vs equivalent Wasm-side computation.
+model Bn254GasExemption {
+  id              String   @id @default(cuid())
+  transactionHash String   @unique
+  contractAddress String?
+  // Detected BN254 operation types involved, e.g. ["bn254_add", "bn254_mul", "bn254_pairing_check", "bn254_multiscalar_mul"]
+  bn254Ops        Json     @default("[]")
+  // Number of detected BN254 host function calls
+  opCount         Int      @default(0)
+  // Actual fee charged for the transaction (stroops)
+  feeCharged      String?
+  // Estimated equivalent fee if done in Wasm (stroops)
+  estimatedWasmFee String?
+  // Net stroops saved
+  stroopSavings   String?
+  // Savings percentage (e.g. 74.0)
+  savingsPct      Float?
+  // CPU instructions from soroban resources
+  cpuInstructions Int      @default(0)
+  // Multi-scalar multiplication complexity factor
+  msmComplexity   Int      @default(0)
+  ledgerSequence  Int
+  ledgerCloseTime DateTime
+  createdAt       DateTime @default(now())
+
+  @@index([contractAddress])
+  @@index([ledgerSequence])
+  @@index([savingsPct])
+}
+
 // Gas cost analytics snapshot — pre-aggregated fee stats per time bucket
 model GasAnalyticsSnapshot {
   id          String   @id @default(cuid())
@@ -593,6 +800,108 @@ model VolumeAlert {
   @@index([zScore])
 }
 
+// #168: Account activation records for XLM SAC transfers to unfunded addresses
+model AccountActivation {
+  id              String   @id @default(cuid())
+  destination     String                        // G-address of the recipient
+  sacAddress      String                        // C-address of the XLM SAC contract
+  transactionHash String                        // originating transaction
+  ledgerSequence  Int
+  ledgerCloseTime DateTime
+  amountStroops   String                        // transfer amount in stroops (i128 as string)
+  previousStatus  String   @default("Unfunded Key")
+  newStatus       String   @default("Active Base Wallet Natively Initialized")
+  createdAt       DateTime @default(now())
+
+  @@unique([transactionHash, destination])
+  @@index([destination])
+  @@index([sacAddress])
+  @@index([ledgerSequence])
+}
+
+// Yield/distribution event from RWA treasury contracts — individual recipient rows
+// grouped by windowLabel for the "Corporate Yield Distribution Sync" dashboard.
+model YieldDistribution {
+  id              String   @id @default(cuid())
+  transactionHash String
+  contractAddress String
+  distributionId  String?
+  recipient       String
+  amount          String
+  tokenSymbol     String?
+  windowLabel     String   @default("Corporate Yield Distribution Sync")
+  ledgerSequence  Int
+  ledgerCloseTime DateTime
+  createdAt       DateTime @default(now())
+
+  @@index([contractAddress])
+  @@index([contractAddress, windowLabel])
+  @@index([contractAddress, ledgerCloseTime])
+  @@index([windowLabel])
+  @@index([distributionId])
+}
+
+// #218: DTCC Tokenized Securities Settlement ID Bridge
+model DtccSettlementBridge {
+  id                  String   @id @default(cuid())
+  transactionHash     String   @unique
+  dtccSettlementId    String
+  securityId          String
+  securityType        String
+  sellerAddress       String
+  buyerAddress        String
+  quantity            String
+  settlementAmount    String
+  currency            String   @default("USD")
+  settlementStatus    String   @default("pending")
+  settlementDate      DateTime?
+  contractAddress     String?
+  ledgerSequence      Int
+  ledgerCloseTime     DateTime
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  @@index([dtccSettlementId])
+  @@index([securityId])
+  @@index([sellerAddress])
+  @@index([buyerAddress])
+  @@index([settlementStatus])
+  @@index([ledgerSequence])
+}
+
+// #219: Commodity Compliance Dual-Signer Verification Log
+model CommodityDualSignerLog {
+  id                  String   @id @default(cuid())
+  transactionHash     String   @unique
+  commodityType       String
+  commodityCode       String
+  contractAddress     String
+  traderAddress       String
+  primarySignerAddress  String
+  secondarySignerAddress String
+  primarySigned       Boolean  @default(false)
+  secondarySigned     Boolean  @default(false)
+  bothSigned          Boolean  @default(false)
+  quantity            String
+  unit                String
+  notionalValueUsd    String?
+  regulatoryJurisdiction String @default("CFTC")
+  complianceStatus    String   @default("pending")
+  expiresAt           DateTime?
+  ledgerSequence      Int
+  ledgerCloseTime     DateTime
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  @@index([commodityCode])
+  @@index([contractAddress])
+  @@index([traderAddress])
+  @@index([primarySignerAddress])
+  @@index([secondarySignerAddress])
+  @@index([complianceStatus])
+  @@index([ledgerSequence])
+}
+
 // i18n translation dictionary
 model TranslationKey {
   id              String   @id @default(cuid())
@@ -627,3 +936,26 @@ model Translation {
 
 
 
+
+// #220: High-Throughput Batch-Settlement Event Compact Engine
+// One row per (contractAddress, windowKey) — a window covers WINDOW_SIZE ledgers.
+// Replaces thousands of raw settlement Event rows with a single scannable summary.
+model SettlementBatchSummary {
+  id              String   @id @default(cuid())
+  contractAddress String                        // enterprise banking contract
+  windowKey       Int                           // floor(ledgerSequence / WINDOW_SIZE)
+  ledgerMin       Int                           // first ledger in window
+  ledgerMax       Int                           // last ledger in window
+  windowStart     DateTime                      // ledgerCloseTime of first event
+  windowEnd       DateTime                      // ledgerCloseTime of last event
+  eventCount      Int                           // number of settlement events compacted
+  totalAmount     String                        // sum of settlement amounts (string for precision)
+  uniqueParties   Int                           // distinct addresses involved
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@unique([contractAddress, windowKey])
+  @@index([contractAddress])
+  @@index([ledgerMin])
+  @@index([windowKey])
+}
