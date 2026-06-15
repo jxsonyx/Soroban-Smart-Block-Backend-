@@ -61,17 +61,18 @@ async function main() {
   await cacheConnect();
   await prisma.$connect();
   dbConnectionStatus.set(1);
-  startIndexerService().catch((err) => console.error('Indexer service failed:', err));
+  if (!process.env.DISABLE_INDEXER) {
+    startIndexerService().catch((err) => console.error('Indexer service failed:', err));
+  }
 
-  // Pre-warm token metadata cache from DB so first requests are instant
-  warmTokenMetadataCache().catch((err) =>
-    console.warn('[token-metadata] Cache warm-up failed:', err),
-  );
-
-  // Analytics schedulers
-  startGasAnalyticsScheduler();
-  startPortfolioScanner();
-  startVolumeAlertScheduler();
+  if (!process.env.DISABLE_INDEXER) {
+    warmTokenMetadataCache().catch((err) =>
+      console.warn('[token-metadata] Cache warm-up failed:', err),
+    );
+    startGasAnalyticsScheduler();
+    startPortfolioScanner();
+    startVolumeAlertScheduler();
+  }
 
   const httpServer = createServer(app);
   attachWebSocketServer(httpServer);
