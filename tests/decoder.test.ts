@@ -22,8 +22,8 @@ describe('decodeEvent', () => {
     const result = decodeEvent(topics, data);
 
     expect(result.eventType).toBe('transfer');
-    expect(result.decoded.from).toBe(from);
-    expect(result.decoded.to).toBe(to);
+    expect(result.decoded.from).toBe(ADDR_A);
+    expect(result.decoded.to).toBe(ADDR_B);
     expect(result.decoded.amount).toBe('0.0001000');
   });
 
@@ -38,7 +38,7 @@ describe('decodeEvent', () => {
     const result = decodeEvent(topics, data);
 
     expect(result.eventType).toBe('mint');
-    expect(result.decoded.to).toBe(to);
+    expect(result.decoded.to).toBe(ADDR_A);
     expect(result.decoded.amount).toBe('0.0000500');
   });
 

@@ -760,7 +760,6 @@ model TaxExportJob {
   @@index([status])
 }
 
- feat/threat-intelligence-platform
 // ─── Threat Intelligence Platform ────────────────────────────────────────────
 
 // External vulnerability / feed source registration
@@ -885,7 +884,7 @@ model TipWebhook {
 }
 
 // ─── End Threat Intelligence Platform ────────────────────────────────────────
-=======
+
 // Webhook subscriptions — developer-registered URLs that receive event payloads
 model WebhookSubscription {
   id              String   @id @default(cuid())
@@ -1109,7 +1108,6 @@ model CommodityDualSignerLog {
   @@index([complianceStatus])
   @@index([ledgerSequence])
 }
- main
 
 // i18n translation dictionary
 model TranslationKey {
