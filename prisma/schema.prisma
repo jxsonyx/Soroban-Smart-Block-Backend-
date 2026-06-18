@@ -1917,3 +1917,222 @@ model StellarNetworkHealth {
 
   @@map("stellar_network_health")
 }
+
+// ── Cross-Contract Composability Analyzer ────────────────────────────────────
+
+enum RiskLevel {
+  safe
+  low_risk
+  medium_risk
+  high_risk
+  critical
+}
+
+enum AnalysisStatus {
+  pending
+  analyzing
+  completed
+  failed
+}
+
+enum ComposabilityAlertSeverity {
+  critical
+  high
+  medium
+  low
+}
+
+model ComposedTransaction {
+  id             String         @id @default(cuid())
+  txHash         String         @unique
+  ledgerSeq      Int
+  timestamp      DateTime
+  contractCalls  Json?          // [{from, to, method, args}]
+  callGraph      Json?          // {nodes:[...], edges:[...]}
+  safetyScore    Float?
+  riskLevel      RiskLevel?
+  analysisStatus AnalysisStatus @default(pending)
+  createdAt      DateTime       @default(now())
+
+  patterns CompositionPatternInstance[]
+
+  @@index([txHash])
+  @@index([ledgerSeq])
+  @@index([riskLevel])
+  @@index([analysisStatus])
+}
+
+model CompositionPattern {
+  id              String    @id @default(cuid())
+  name            String    @unique
+  description     String
+  category        String    // flash_loan | arbitrage | leverage | collateral_swap | multi_dex
+  riskRating      RiskLevel @default(medium_risk)
+  requiredCalls   Int       @default(2)
+  detectionRules  Json?
+  safeIf          Json?
+  mitigationGuide String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  instances CompositionPatternInstance[]
+  alerts    CompositionAlert[]
+
+  @@index([category])
+  @@index([riskRating])
+}
+
+model CompositionPatternInstance {
+  id          String   @id @default(cuid())
+  txId        String
+  patternId   String
+  confidence  Float
+  details     Json?
+  createdAt   DateTime @default(now())
+
+  transaction ComposedTransaction @relation(fields: [txId], references: [id])
+  pattern     CompositionPattern  @relation(fields: [patternId], references: [id])
+
+  @@index([txId])
+  @@index([patternId])
+}
+
+model ContractComposability {
+  id                  String   @id @default(cuid())
+  contractId          String
+  contractAddress     String   @unique
+  composedWith        Json?    // [{address, name, callCount}]
+  compositionCount    Int      @default(0)
+  uniqueCallers       Int      @default(0)
+  uniqueCallees       Int      @default(0)
+  avgCompositionDepth Float?
+  safetyScoreAvg      Float?
+  riskIncidents       Int      @default(0)
+  lastAnalyzed        DateTime @default(now())
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  @@index([contractAddress])
+  @@index([riskIncidents])
+  @@index([safetyScoreAvg])
+}
+
+model CompositionAlert {
+  id              String                     @id @default(cuid())
+  txHash          String?
+  contractAddress String?
+  patternId       String?
+  severity        ComposabilityAlertSeverity
+  title           String
+  description     String
+  exploitDetected Boolean                    @default(false)
+  mitigated       Boolean                    @default(false)
+  mitigationPatch Json?
+  createdAt       DateTime                   @default(now())
+  resolvedAt      DateTime?
+
+  pattern CompositionPattern? @relation(fields: [patternId], references: [id])
+
+  @@index([txHash])
+  @@index([contractAddress])
+  @@index([severity])
+  @@index([exploitDetected])
+  @@index([createdAt])
+}
+
+// Static analysis result per contract address
+model ComposabilityStaticAnalysis {
+  id              String   @id @default(cuid())
+  contractAddress String   @unique
+  externalCalls   Json?    // [{callee, method, isDynamic}]
+  callGraph       Json?    // {nodes, edges}
+  circularDeps    Json?    // [[addr1, addr2, ...], ...]
+  hasUnboundedRecursion Boolean @default(false)
+  maxCallDepth    Int      @default(0)
+  analysisVersion String   @default("1.0")
+  analyzedAt      DateTime @default(now())
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([contractAddress])
+  @@index([analyzedAt])
+}
+
+// Formal verification result per transaction composition
+model ComposabilityVerification {
+  id             String   @id @default(cuid())
+  txHash         String   @unique
+  atomicity      Boolean  @default(false)
+  authorization  Boolean  @default(false)
+  stateConsistency Boolean @default(false)
+  reentrancyFree Boolean  @default(false)
+  oracleFreshness Boolean @default(false)
+  atomicityScore    Float  @default(0)
+  authorizationScore Float @default(0)
+  stateScore        Float  @default(0)
+  reentrancyScore   Float  @default(0)
+  oracleScore       Float  @default(0)
+  totalScore        Float  @default(0)
+  proofData      Json?    // formal proof or counterexample details
+  verified       Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([txHash])
+  @@index([verified])
+  @@index([totalScore])
+}
+
+// Fuzzing campaign tracking
+model ComposabilityFuzzCampaign {
+  id              String   @id @default(cuid())
+  contractAddress String
+  status          String   @default("running") // running | completed | failed
+  totalCases      Int      @default(0)
+  unsafeFound     Int      @default(0)
+  falsePositives  Int      @default(0)
+  coveragePct     Float    @default(0)
+  findings        Json?    // [{sequence, risk, description}]
+  startedAt       DateTime @default(now())
+  completedAt     DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([contractAddress])
+  @@index([status])
+}
+
+// Exploit database entries
+model ComposabilityExploit {
+  id               String   @id @default(cuid())
+  title            String
+  description      String
+  patternCategory  String   // flash_loan | reentrancy | oracle_manip | etc
+  cveId            String?
+  affectedContracts String[]
+  exploitTxHashes  String[]
+  advisoryUrl      String?
+  severity         ComposabilityAlertSeverity
+  discoveredAt     DateTime @default(now())
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@index([patternCategory])
+  @@index([severity])
+  @@index([discoveredAt])
+}
+
+// Ecosystem Composability Index — daily snapshots
+model EcosystemComposabilityIndex {
+  id                  String   @id @default(cuid())
+  score               Float    // 0-1000
+  compositionDiversity Int     @default(0)
+  avgSafetyScore      Float    @default(0)
+  exploitIncidentRate Float    @default(0)
+  protocolInterconnectivity Float @default(0)
+  totalContracts      Int      @default(0)
+  totalComposedTx     Int      @default(0)
+  computedAt          DateTime @default(now())
+
+  @@index([computedAt])
+}
