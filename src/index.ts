@@ -32,7 +32,6 @@ import { attachPrivacyWebSocket } from './ws/privacyBroadcaster';
 import { errorHandler } from './middleware/errorHandler';
 import { logger } from './logger';
 import { feedOrchestrator } from './feed/orchestrator';
-import { feedOrchestrator } from './feed/orchestrator';
 
 const app = express();
 

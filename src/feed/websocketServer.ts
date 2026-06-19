@@ -17,7 +17,7 @@ export class FeedWebSocketServer {
   private wss: WebSocket.Server;
   private connections = new Map<string, WebSocketConnection>();
   private subscriptionManager = new SubscriptionManager();
-  private heartbeatInterval: NodeJS.Timeout;
+  private heartbeatInterval!: NodeJS.Timeout;
 
   constructor(server: any) {
     this.wss = new WebSocket.Server({ 
@@ -92,7 +92,7 @@ export class FeedWebSocketServer {
 
       // Handle ping/pong for keepalive
       ws.on('pong', () => {
-        connection.ws.isAlive = true;
+        (connection.ws as any).isAlive = true;
       });
     });
   }
@@ -199,6 +199,7 @@ export class FeedWebSocketServer {
   }
 
   private async getMissedMessages(channels: string[], lastSequence: bigint) {
+    const { prisma } = await import('../db');
     return await prisma.feedMessage.findMany({
       where: {
         channelName: { in: channels },

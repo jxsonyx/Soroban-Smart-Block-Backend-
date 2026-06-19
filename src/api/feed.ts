@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { z } from 'zod';
-import { ChannelManager } from './channelManager';
-import { SubscriptionManager } from './subscriptionManager';
+import { ChannelManager } from '../feed/channelManager';
+import { SubscriptionManager } from '../feed/subscriptionManager';
 import { prisma } from '../db';
 
 const router = Router();
@@ -87,7 +87,7 @@ router.get('/subscriptions', async (req, res) => {
     const subscriptions = await subscriptionManager.listSubscriptions(userId);
     
     res.json({
-      subscriptions: subscriptions.map(sub => ({
+      subscriptions: subscriptions.map((sub: any) => ({
         id: sub.id,
         channelName: sub.channelName,
         deliveryType: sub.deliveryType,

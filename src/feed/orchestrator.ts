@@ -8,7 +8,7 @@ import { FeedWebSocketServer } from './websocketServer';
 export class FeedOrchestrator extends EventEmitter {
   private subscriptionManager = new SubscriptionManager();
   private wsServer?: FeedWebSocketServer;
-  private metricsInterval: NodeJS.Timeout;
+  private metricsInterval!: NodeJS.Timeout;
 
   async initialize(httpServer?: any) {
     // Initialize default channels

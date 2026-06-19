@@ -218,7 +218,8 @@ async function processBackfillRequest(requestId: string) {
     });
 
     // Send callback if provided
-    if (request.filters?.callbackUrl) {
+    if (request.filters && typeof request.filters === 'object' && 
+        request.filters !== null && 'callbackUrl' in request.filters) {
       // TODO: Send completion callback
     }
 
@@ -229,7 +230,7 @@ async function processBackfillRequest(requestId: string) {
       where: { id: requestId },
       data: {
         status: 'failed',
-        errorMessage: error.message
+        errorMessage: error instanceof Error ? error.message : 'Unknown error'
       }
     });
   }

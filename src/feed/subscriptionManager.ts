@@ -51,7 +51,7 @@ export class SubscriptionManager {
     });
   }
 
-  async updateSubscription(id: string, updates: Partial<SubscriptionConfig>) {
+  async updateSubscription(id: string, updates: Partial<SubscriptionConfig & { status: string }>) {
     const subscription = await prisma.feedSubscription.update({
       where: { id },
       data: {

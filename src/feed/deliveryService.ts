@@ -33,7 +33,7 @@ export class DeliveryService extends EventEmitter {
 
       // Apply filters
       if (subscription.filters) {
-        const matches = this.subscriptionManager.matchesFilters(message.data, subscription.filters);
+        const matches = this.subscriptionManager.matchesFilters(message.data, subscription.filters as any);
         if (!matches) {
           return;
         }
@@ -49,7 +49,7 @@ export class DeliveryService extends EventEmitter {
       await this.deliverSingle(subscription, [message]);
     } catch (error) {
       console.error('Delivery failed:', error);
-      await this.subscriptionManager.updateDeliveryStats(subscriptionId, false, error.message);
+      await this.subscriptionManager.updateDeliveryStats(subscriptionId, false, error instanceof Error ? error.message : 'Unknown error');
     }
   }
 
@@ -153,8 +153,8 @@ export class DeliveryService extends EventEmitter {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
     } catch (error) {
-      console.error(`Webhook delivery failed for ${subscriptionId}:`, error.message);
-      await this.subscriptionManager.updateDeliveryStats(subscriptionId, false, error.message);
+      console.error(`Webhook delivery failed for ${subscriptionId}:`, error instanceof Error ? error.message : 'Unknown error');
+      await this.subscriptionManager.updateDeliveryStats(subscriptionId, false, error instanceof Error ? error.message : 'Unknown error');
       
       // Retry logic can be added here
       if (config.retryOnFailure && config.maxRetries > 0) {

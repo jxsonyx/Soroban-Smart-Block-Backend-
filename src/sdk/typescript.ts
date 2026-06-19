@@ -60,7 +60,7 @@ export class SorobanFeed {
    * Subscribe to a real-time feed channel
    */
   async subscribe(options: SubscriptionOptions): Promise<SorobanSubscription> {
-    const response = await this.request('POST', '/feed/subscribe', options);
+    const response: any = await this.request('POST', '/feed/subscribe', options);
     const subscription = new SorobanSubscription(response.id, options, this);
     return subscription;
   }
@@ -147,7 +147,7 @@ export class SorobanFeed {
     const response = await fetch(url, options);
     
     if (!response.ok) {
-      const error = await response.json().catch(() => ({ message: response.statusText }));
+      const error: any = await response.json().catch(() => ({ message: response.statusText }));
       throw new Error(`API Error: ${response.status} - ${error.message}`);
     }
 
