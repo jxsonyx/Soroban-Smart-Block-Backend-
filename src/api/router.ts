@@ -42,8 +42,7 @@ import feedRouter from './feed';
 import backfillRouter from './backfill';
 import marketRouter from './market';
 import feedSSERouter from './feedSSE';
-import { arbitrageRouter } from './arbitrage';
-
+import { predictRouter } from './predict';
 export const router = Router();
 
 router.use('/transactions', transactionRouter);
@@ -89,5 +88,4 @@ router.use('/feed', feedRouter);
 router.use('/feed/backfill', backfillRouter);
 router.use('/feed/sse', feedSSERouter);
 router.use('/market', marketRouter);
-// Arbitrage Intelligence Platform
-router.use('/arbitrage', arbitrageRouter);
+router.use('/predict', predictRouter);
