@@ -9,7 +9,7 @@ import {
   resolveRoutingIdentity,
   normalizeAddresses,
   isValidAnyAddress,
-} from '../src/indexer/strkey-translator';
+} from '../../src/indexer/strkey-translator';
 
 // ── Fixtures ──────────────────────────────────────────────────────────────────
 

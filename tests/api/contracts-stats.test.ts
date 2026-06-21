@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 const contractFindUnique = vi.fn();
 const transactionGroupBy = vi.fn();
 
-vi.mock('../src/db', () => ({
+vi.mock('../../src/db', () => ({
   prismaRead: {
     contract: { findUnique: contractFindUnique },
     transaction: { groupBy: transactionGroupBy },
@@ -11,7 +11,9 @@ vi.mock('../src/db', () => ({
   prismaWrite: {
     contract: { upsert: vi.fn() },
   },
-  get prisma() { return (this as any).prismaWrite; },
+  get prisma() {
+    return (this as any).prismaWrite;
+  },
 }));
 
 describe('getContractFunctionStats', () => {
@@ -35,7 +37,7 @@ describe('getContractFunctionStats', () => {
       },
     ]);
 
-    const { getContractFunctionStats } = await import('../src/api/contracts');
+    const { getContractFunctionStats } = await import('../../src/api/contracts');
     const result = await getContractFunctionStats('C123');
 
     expect(transactionGroupBy).toHaveBeenCalledWith({
@@ -46,10 +48,7 @@ describe('getContractFunctionStats', () => {
       },
       _count: { functionName: true },
       _max: { ledgerCloseTime: true },
-      orderBy: [
-        { _count: { functionName: 'desc' } },
-        { functionName: 'asc' },
-      ],
+      orderBy: [{ _count: { functionName: 'desc' } }, { functionName: 'asc' }],
     });
     expect(result).toEqual([
       {
@@ -70,7 +69,7 @@ describe('getContractFunctionStats', () => {
     contractFindUnique.mockResolvedValue({ address: 'C123' });
     transactionGroupBy.mockResolvedValue([]);
 
-    const { getContractFunctionStats } = await import('../src/api/contracts');
+    const { getContractFunctionStats } = await import('../../src/api/contracts');
     await getContractFunctionStats('C123', since);
 
     expect(transactionGroupBy).toHaveBeenCalledWith({
@@ -82,10 +81,7 @@ describe('getContractFunctionStats', () => {
       },
       _count: { functionName: true },
       _max: { ledgerCloseTime: true },
-      orderBy: [
-        { _count: { functionName: 'desc' } },
-        { functionName: 'asc' },
-      ],
+      orderBy: [{ _count: { functionName: 'desc' } }, { functionName: 'asc' }],
     });
   });
 
@@ -93,7 +89,7 @@ describe('getContractFunctionStats', () => {
     contractFindUnique.mockResolvedValue({ address: 'C123' });
     transactionGroupBy.mockResolvedValue([]);
 
-    const { getContractFunctionStats } = await import('../src/api/contracts');
+    const { getContractFunctionStats } = await import('../../src/api/contracts');
     const result = await getContractFunctionStats('C123');
 
     expect(result).toEqual([]);
@@ -102,7 +98,7 @@ describe('getContractFunctionStats', () => {
   it('returns null when the contract does not exist', async () => {
     contractFindUnique.mockResolvedValue(null);
 
-    const { getContractFunctionStats } = await import('../src/api/contracts');
+    const { getContractFunctionStats } = await import('../../src/api/contracts');
     const result = await getContractFunctionStats('C404');
 
     expect(transactionGroupBy).not.toHaveBeenCalled();

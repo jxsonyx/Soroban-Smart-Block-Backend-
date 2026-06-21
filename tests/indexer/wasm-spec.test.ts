@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { parseWasmSpec, fetchContractSpec } from '../src/indexer/wasm-spec';
+import { parseWasmSpec, fetchContractSpec } from '../../src/indexer/wasm-spec';
 import { xdr, contract } from '@stellar/stellar-sdk';
 
 // Minimal Wasm binary containing a single `contractspecv0` custom section.
@@ -45,11 +45,13 @@ describe('parseWasmSpec', () => {
 
 describe('fetchContractSpec', () => {
   it('returns null when RPC throws', async () => {
-    vi.mock('../src/indexer/rpc', () => ({
+    vi.mock('../../src/indexer/rpc', () => ({
       rpc: { getContractWasmByContractId: vi.fn().mockRejectedValue(new Error('not found')) },
     }));
 
-    const result = await fetchContractSpec('CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM');
+    const result = await fetchContractSpec(
+      'CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM',
+    );
     expect(result).toBeNull();
   });
 });

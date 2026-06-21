@@ -10,7 +10,7 @@ import {
   Operation,
   Address,
 } from '@stellar/stellar-sdk';
-import { scValToJson, parseInvokeHostFunction } from '../src/indexer/xdr-parser';
+import { scValToJson, parseInvokeHostFunction } from '../../src/indexer/xdr-parser';
 
 // ── helpers ──────────────────────────────────────────────────────────────────
 
@@ -117,10 +117,7 @@ describe('parseInvokeHostFunction', () => {
   });
 
   it('extracts contractId, functionName, and args', () => {
-    const args = [
-      nativeToScVal(100n, { type: 'i128' }),
-      nativeToScVal('GABC', { type: 'string' }),
-    ];
+    const args = [nativeToScVal(100n, { type: 'i128' }), nativeToScVal('GABC', { type: 'string' })];
     const envelope = buildInvokeEnvelope(FAKE_CONTRACT_ID, 'swap', args);
     const result = parseInvokeHostFunction(envelope);
 

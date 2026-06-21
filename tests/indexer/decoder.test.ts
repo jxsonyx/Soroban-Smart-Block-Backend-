@@ -1,10 +1,14 @@
 import { describe, it, expect } from 'vitest';
-import { decodeEvent } from '../src/indexer/decoder';
-import { renderHuman, SEP41_ABI } from '../src/indexer/registry';
+import { decodeEvent } from '../../src/indexer/decoder';
+import { renderHuman, SEP41_ABI } from '../../src/indexer/registry';
 import { xdr, Address, Keypair, nativeToScVal } from '@stellar/stellar-sdk';
 
-function toBase64(val: xdr.ScVal): string { return val.toXDR('base64'); }
-function addrXdr(addr: string): string { return new Address(addr).toScVal().toXDR('base64'); }
+function toBase64(val: xdr.ScVal): string {
+  return val.toXDR('base64');
+}
+function addrXdr(addr: string): string {
+  return new Address(addr).toScVal().toXDR('base64');
+}
 
 const ADDR_A = Keypair.random().publicKey();
 const ADDR_B = Keypair.random().publicKey();
@@ -30,8 +34,8 @@ describe('decodeEvent', () => {
   it('decodes a SEP-41 mint event', () => {
     const topics = [
       toBase64(nativeToScVal('mint', { type: 'symbol' })),
-      addrXdr(ADDR_C),  // admin
-      addrXdr(ADDR_A),  // to
+      addrXdr(ADDR_C), // admin
+      addrXdr(ADDR_A), // to
     ];
     const data = toBase64(nativeToScVal(500n, { type: 'i128' }));
 
@@ -44,7 +48,7 @@ describe('decodeEvent', () => {
 
   it('falls back gracefully on unknown event type', () => {
     const topics = [toBase64(nativeToScVal('custom_event', { type: 'symbol' }))];
-    const data   = toBase64(nativeToScVal('some_data', { type: 'string' }));
+    const data = toBase64(nativeToScVal('some_data', { type: 'string' }));
 
     const result = decodeEvent(topics, data);
 

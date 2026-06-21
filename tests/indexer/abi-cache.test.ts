@@ -1,17 +1,26 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { getCachedAbi, setCachedAbi, deleteCachedAbi, invalidateCache, ContractAbi } from '../src/indexer/abi-cache';
+import {
+  getCachedAbi,
+  setCachedAbi,
+  deleteCachedAbi,
+  invalidateCache,
+  ContractAbi,
+} from '../../src/indexer/abi-cache';
 
-vi.mock('../src/db', () => ({
+vi.mock('../../src/db', () => ({
   prismaRead: {
     contract: { findUnique: vi.fn() },
   },
   prismaWrite: {
     contract: { upsert: vi.fn(), update: vi.fn() },
   },
-  get prisma() { return (this as any).prismaWrite; },
+  get prisma() {
+    return (this as any).prismaWrite;
+  },
 }));
 
-import { prismaRead, prismaWrite } from '../src/db';
+import { prismaRead, prismaWrite } from '../../src/db';
+import { z } from 'zod';
 
 const ADDR = 'CTEST000000000000000000000000000000000000000000000000000001';
 const SAMPLE_ABI: ContractAbi = {
@@ -51,7 +60,7 @@ describe('setCachedAbi', () => {
 
     await setCachedAbi(ADDR, SAMPLE_ABI);
     expect(prismaWrite.contract.upsert).toHaveBeenCalledWith(
-      expect.objectContaining({ where: { address: ADDR } })
+      expect.objectContaining({ where: { address: ADDR } }),
     );
 
     // Should now be in cache — no DB call needed
@@ -71,7 +80,7 @@ describe('deleteCachedAbi', () => {
     await deleteCachedAbi(ADDR);
 
     expect(prismaWrite.contract.update).toHaveBeenCalledWith(
-      expect.objectContaining({ where: { address: ADDR } })
+      expect.objectContaining({ where: { address: ADDR } }),
     );
 
     // Cache should be empty; DB returns null
@@ -82,20 +91,22 @@ describe('deleteCachedAbi', () => {
 
 describe('abiBodySchema validation (via abi router logic)', () => {
   it('accepts a valid ABI shape', () => {
-    const { z } = require('zod');
     const schema = z.object({
-      functions: z.array(z.object({
-        name: z.string().min(1),
-        inputs: z.array(z.object({ name: z.string(), type: z.string() })),
-        outputs: z.array(z.object({ type: z.string() })).optional(),
-        humanTemplate: z.string().optional(),
-      })).min(1),
+      functions: z
+        .array(
+          z.object({
+            name: z.string().min(1),
+            inputs: z.array(z.object({ name: z.string(), type: z.string() })),
+            outputs: z.array(z.object({ type: z.string() })).optional(),
+            humanTemplate: z.string().optional(),
+          }),
+        )
+        .min(1),
     });
     expect(schema.safeParse(SAMPLE_ABI).success).toBe(true);
   });
 
   it('rejects an ABI with empty functions array', () => {
-    const { z } = require('zod');
     const schema = z.object({
       functions: z.array(z.object({ name: z.string().min(1), inputs: z.array(z.any()) })).min(1),
     });
@@ -103,7 +114,6 @@ describe('abiBodySchema validation (via abi router logic)', () => {
   });
 
   it('rejects an ABI missing the functions key', () => {
-    const { z } = require('zod');
     const schema = z.object({
       functions: z.array(z.object({ name: z.string().min(1), inputs: z.array(z.any()) })).min(1),
     });

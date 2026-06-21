@@ -17,7 +17,7 @@ import { AddressInfo } from 'node:net';
 
 // ── Mock Prisma before importing routes ───────────────────────────────────────
 
-vi.mock('../src/db', () => ({
+vi.mock('../../src/db', () => ({
   prismaRead: {
     transaction: {
       findMany: vi.fn(),
@@ -34,13 +34,13 @@ vi.mock('../src/db', () => ({
 }));
 
 // Mock the BN254 tracker used by the transactions route
-vi.mock('../src/indexer/bn254-tracker', () => ({
+vi.mock('../../src/indexer/bn254-tracker', () => ({
   getBn254ExemptionByTx: vi.fn().mockResolvedValue(null),
 }));
 
-import { prismaRead as prisma } from '../src/db';
-import { transactionRouter } from '../src/api/transactions';
-import { eventRouter } from '../src/api/events';
+import { prismaRead as prisma } from '../../src/db';
+import { transactionRouter } from '../../src/api/transactions';
+import { eventRouter } from '../../src/api/events';
 
 // ── Test server setup ─────────────────────────────────────────────────────────
 

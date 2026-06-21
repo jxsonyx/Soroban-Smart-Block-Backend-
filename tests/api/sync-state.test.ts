@@ -3,15 +3,17 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 const ledgerAggregate = vi.fn();
 const getLatestLedgerMock = vi.fn();
 
-vi.mock('../src/db', () => ({
+vi.mock('../../src/db', () => ({
   prismaRead: {
     ledger: { aggregate: ledgerAggregate },
   },
   prismaWrite: {},
-  get prisma() { return (this as any).prismaWrite; },
+  get prisma() {
+    return (this as any).prismaWrite;
+  },
 }));
 
-vi.mock('../src/indexer/rpc', () => ({
+vi.mock('../../src/indexer/rpc', () => ({
   getLatestLedger: getLatestLedgerMock,
 }));
 
@@ -25,7 +27,7 @@ describe('getSyncState', () => {
     ledgerAggregate.mockResolvedValue({ _max: { sequence: 5000 } });
     getLatestLedgerMock.mockResolvedValue(5000);
 
-    const { getSyncState } = await import('../src/api/sync-state');
+    const { getSyncState } = await import('../../src/api/sync-state');
     const result = await getSyncState();
 
     expect(result).toEqual({
@@ -40,7 +42,7 @@ describe('getSyncState', () => {
     ledgerAggregate.mockResolvedValue({ _max: { sequence: 999 } });
     getLatestLedgerMock.mockResolvedValue(1000);
 
-    const { getSyncState } = await import('../src/api/sync-state');
+    const { getSyncState } = await import('../../src/api/sync-state');
     const result = await getSyncState();
 
     expect(result.dbLedger).toBe(999);
@@ -53,7 +55,7 @@ describe('getSyncState', () => {
     ledgerAggregate.mockResolvedValue({ _max: { sequence: null } });
     getLatestLedgerMock.mockResolvedValue(5000);
 
-    const { getSyncState } = await import('../src/api/sync-state');
+    const { getSyncState } = await import('../../src/api/sync-state');
     const result = await getSyncState();
 
     expect(result.dbLedger).toBe(0);
@@ -65,7 +67,7 @@ describe('getSyncState', () => {
     ledgerAggregate.mockResolvedValue({ _max: { sequence: 5001 } });
     getLatestLedgerMock.mockResolvedValue(5000);
 
-    const { getSyncState } = await import('../src/api/sync-state');
+    const { getSyncState } = await import('../../src/api/sync-state');
     const result = await getSyncState();
 
     expect(result.syncPercent).toBe(100);

@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 // Use inline factory — vi.mock is hoisted so external variables are not yet initialised
-vi.mock('../src/db', () => {
+vi.mock('../../src/db', () => {
   const mockFindFirst = vi.fn();
   const mockCreate = vi.fn();
   const mockUpdate = vi.fn();
@@ -21,8 +21,8 @@ vi.mock('../src/db', () => {
   };
 });
 
-import { enqueueFailure, retryFailures } from '../src/indexer/errorQueue';
-import { prismaWrite } from '../src/db';
+import { enqueueFailure, retryFailures } from '../../src/indexer/errorQueue';
+import { prismaWrite } from '../../src/db';
 
 // Typed helpers to access the mocked methods
 const db = prismaWrite.failedItem as {

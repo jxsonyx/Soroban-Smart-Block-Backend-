@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { xdr, nativeToScVal, Address, Keypair } from '@stellar/stellar-sdk';
-import { decodeScVal, decodeTypedArgs, formatAmount } from '../src/indexer/args-decoder';
-import type { AbiParam } from '../src/indexer/registry';
+import { decodeScVal, decodeTypedArgs, formatAmount } from '../../src/indexer/args-decoder';
+import type { AbiParam } from '../../src/indexer/registry';
 
 // Stable valid Stellar address for tests
 const VALID_ADDR = Keypair.random().publicKey();
@@ -68,7 +68,9 @@ describe('decodeScVal — address', () => {
 describe('decodeScVal — bool', () => {
   it('decodes true/false', () => {
     expect(decodeScVal(nativeToScVal(true), { name: 'flag', type: 'bool' }).formatted).toBe('true');
-    expect(decodeScVal(nativeToScVal(false), { name: 'flag', type: 'bool' }).formatted).toBe('false');
+    expect(decodeScVal(nativeToScVal(false), { name: 'flag', type: 'bool' }).formatted).toBe(
+      'false',
+    );
   });
 });
 
@@ -98,8 +100,14 @@ describe('decodeScVal — struct', () => {
   it('decodes a scvMap as struct', () => {
     // Build a proper scvMap with symbol keys (as Soroban structs are encoded)
     const val = xdr.ScVal.scvMap([
-      new xdr.ScMapEntry({ key: xdr.ScVal.scvSymbol('x'), val: nativeToScVal(1n, { type: 'i128' }) }),
-      new xdr.ScMapEntry({ key: xdr.ScVal.scvSymbol('y'), val: nativeToScVal(2n, { type: 'i128' }) }),
+      new xdr.ScMapEntry({
+        key: xdr.ScVal.scvSymbol('x'),
+        val: nativeToScVal(1n, { type: 'i128' }),
+      }),
+      new xdr.ScMapEntry({
+        key: xdr.ScVal.scvSymbol('y'),
+        val: nativeToScVal(2n, { type: 'i128' }),
+      }),
     ]);
     const result = decodeScVal(val, { name: 'point', type: 'struct' });
     expect(result.raw).toMatchObject({ x: 1n, y: 2n });
@@ -180,11 +188,7 @@ describe('decodeTypedArgs', () => {
       { name: 'amount', type: 'i128' },
     ];
     const addrScVal = new Address(VALID_ADDR).toScVal();
-    const rawArgs = [
-      addrScVal,
-      addrScVal,
-      nativeToScVal(10_000_000n, { type: 'i128' }),
-    ];
+    const rawArgs = [addrScVal, addrScVal, nativeToScVal(10_000_000n, { type: 'i128' })];
 
     const result = decodeTypedArgs(params, rawArgs, 7);
 

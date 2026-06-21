@@ -1,5 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { measureReplicaLag, getReadClient, LAG_THRESHOLD_LEDGERS, _resetLagCache } from '../src/db/replicaGateway';
+import {
+  measureReplicaLag,
+  getReadClient,
+  LAG_THRESHOLD_LEDGERS,
+  _resetLagCache,
+} from '../../src/db/replicaGateway';
 import type { PrismaClient } from '@prisma/client';
 
 function makeClient(lastLedger: number | null) {

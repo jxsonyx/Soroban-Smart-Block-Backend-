@@ -1,7 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { prismaRead, prismaWrite } from '../db';
 import { z } from 'zod';
-import { fetchContractSpec } from '../indexer/wasm-spec';
 import { abiRouter } from './abi';
 import { validateAddressParam, isValidStellarAddress } from '../middleware/sanitize';
 
@@ -13,6 +12,8 @@ import { validateAddressParam, isValidStellarAddress } from '../middleware/sanit
  */
 
 export const contractRouter = Router();
+
+contractRouter.use('/:address/abi', abiRouter);
 
 const abiSchema = z.object({
   address: z
@@ -186,6 +187,7 @@ contractRouter.get(
   },
 );
 
+<<<<<<< HEAD
 /**
  * @swagger
  * /api/v1/contracts/{address}:
@@ -237,11 +239,17 @@ contractRouter.get(
  *                 - $ref: '#/components/schemas/Error'
  *               example: { error: 'Contract not found' }
  */
+=======
+>>>>>>> 8492f27 (fix: resolve all CI failures and clean up codebase)
 // GET /contracts/:address
 contractRouter.get(
   '/:address',
   validateAddressParam('address'),
+<<<<<<< HEAD
   asyncHandler(async (req: Request, res: Response) => {
+=======
+  async (req: Request, res: Response) => {
+>>>>>>> 8492f27 (fix: resolve all CI failures and clean up codebase)
     const contract = await prismaRead.contract.findUnique({
       where: { address: req.params.address },
       include: {
@@ -259,7 +267,11 @@ contractRouter.get(
     });
     if (!contract) return res.status(404).json({ error: 'Contract not found' });
     res.json(contract);
+<<<<<<< HEAD
   }),
+=======
+  },
+>>>>>>> 8492f27 (fix: resolve all CI failures and clean up codebase)
 );
 
 /**
@@ -319,5 +331,3 @@ contractRouter.post('/', async (req: Request, res: Response) => {
     res.status(400).json({ error: String(e) });
   }
 });
-
-

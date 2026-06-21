@@ -15,13 +15,15 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 // ─── Mock DB ──────────────────────────────────────────────────────────────────
 
-vi.mock('../src/db', () => ({
+vi.mock('../../src/db', () => ({
   prismaRead: {
     contract: { findUnique: vi.fn(), findMany: vi.fn() },
     sacMapping: { findUnique: vi.fn(), findMany: vi.fn() },
   },
   prismaWrite: {},
-  get prisma() { return (this as any).prismaWrite; },
+  get prisma() {
+    return (this as any).prismaWrite;
+  },
 }));
 
 // ─── Mock axios (Horizon calls) ───────────────────────────────────────────────
@@ -34,7 +36,7 @@ vi.mock('axios', () => ({
 
 // ─── Mock config ──────────────────────────────────────────────────────────────
 
-vi.mock('../src/config', () => ({
+vi.mock('../../src/config', () => ({
   config: {
     stellarRpcUrl: 'https://soroban-testnet.stellar.org',
     horizonUrl: 'https://horizon-testnet.stellar.org',
@@ -61,7 +63,7 @@ vi.mock('@stellar/stellar-sdk', async (importOriginal) => {
   };
 });
 
-import { prismaRead } from '../src/db';
+import { prismaRead } from '../../src/db';
 import axios from 'axios';
 import {
   getTokenMetadata,
@@ -72,12 +74,12 @@ import {
   clearTokenMetadataCache,
   warmTokenMetadataCache,
   getTokenMetadataCacheSize,
-} from '../src/indexer/token-metadata';
+} from '../../src/indexer/token-metadata';
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 const SOROBAN_ADDR = 'CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABSC4';
-const SAC_ADDR     = 'CBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBSC4';
+const SAC_ADDR = 'CBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBSC4';
 
 beforeEach(() => {
   vi.clearAllMocks();
@@ -396,7 +398,10 @@ describe('getClassicAssetMetadata', () => {
       },
     });
 
-    const meta = await getClassicAssetMetadata('USDC', 'GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN');
+    const meta = await getClassicAssetMetadata(
+      'USDC',
+      'GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN',
+    );
     expect(meta.symbol).toBe('USDC');
     expect(meta.name).toBe('USD Coin');
     expect(meta.decimals).toBe(7);

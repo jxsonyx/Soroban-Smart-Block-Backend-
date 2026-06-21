@@ -22,7 +22,7 @@ import {
 
 // ── Mock dependencies that require a live DB ─────────────────────────────────
 
-vi.mock('../src/db', () => ({
+vi.mock('../../src/db', () => ({
   prismaRead: {
     eventDefinition: { findUnique: vi.fn().mockResolvedValue(null) },
     contract: { findUnique: vi.fn().mockResolvedValue(null) },
@@ -30,19 +30,19 @@ vi.mock('../src/db', () => ({
   prismaWrite: {},
 }));
 
-vi.mock('../src/indexer/registry', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('../src/indexer/registry')>();
+vi.mock('../../src/indexer/registry', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../../src/indexer/registry')>();
   return {
     ...actual,
     getContractAbi: vi.fn().mockResolvedValue(null),
   };
 });
 
-vi.mock('../src/indexer/identity-verifier', () => ({
+vi.mock('../../src/indexer/identity-verifier', () => ({
   decodeMastercardFlags: vi.fn().mockReturnValue(null),
 }));
 
-import { decodeTransaction } from '../src/indexer/decoder';
+import { decodeTransaction } from '../../src/indexer/decoder';
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 

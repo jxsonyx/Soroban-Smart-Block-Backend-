@@ -7,13 +7,13 @@ const { mockFindMany, mockUpdateMany, mockUploadToS3 } = vi.hoisted(() => ({
   mockUploadToS3: vi.fn().mockResolvedValue(undefined),
 }));
 
-vi.mock('../src/archival/s3Client', () => ({
+vi.mock('../../src/archival/s3Client', () => ({
   ARCHIVE_BUCKET: 'test-bucket',
   uploadToS3: mockUploadToS3,
   downloadFromS3: vi.fn().mockResolvedValue('{}'),
 }));
 
-vi.mock('../src/db', () => ({
+vi.mock('../../src/db', () => ({
   prismaWrite: {
     transaction: {
       findMany: mockFindMany,
@@ -22,7 +22,7 @@ vi.mock('../src/db', () => ({
   },
 }));
 
-import { archiveRawXdr } from '../src/archival/archiver';
+import { archiveRawXdr } from '../../src/archival/archiver';
 
 const MOCK_TX = {
   id: 'cuid1',

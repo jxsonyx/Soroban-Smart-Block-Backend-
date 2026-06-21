@@ -21,8 +21,8 @@ import {
   getSep41Abi,
   SEP41_FUNCTIONS,
   SEP41_EVENTS,
-} from '../src/indexer/sep41-parser';
-import { decodeEvent } from '../src/indexer/decoder';
+} from '../../src/indexer/sep41-parser';
+import { decodeEvent } from '../../src/indexer/decoder';
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -55,9 +55,20 @@ function u32Xdr(val: number): string {
 describe('isSep41Function', () => {
   it('returns true for all standard SEP-41 functions', () => {
     const expected = [
-      'transfer', 'transfer_from', 'approve', 'balance_of', 'allowance',
-      'decimals', 'name', 'symbol', 'mint', 'burn', 'burn_from',
-      'clawback', 'set_admin', 'admin',
+      'transfer',
+      'transfer_from',
+      'approve',
+      'balance_of',
+      'allowance',
+      'decimals',
+      'name',
+      'symbol',
+      'mint',
+      'burn',
+      'burn_from',
+      'clawback',
+      'set_admin',
+      'admin',
     ];
     for (const fn of expected) {
       expect(isSep41Function(fn), `expected ${fn} to be SEP-41`).toBe(true);
@@ -154,10 +165,7 @@ describe('parseSep41Call — balance_of', () => {
 
 describe('parseSep41Call — allowance', () => {
   it('decodes from and spender', () => {
-    const rawArgs = [
-      new Address(ADDR_A).toScVal(),
-      new Address(ADDR_B).toScVal(),
-    ];
+    const rawArgs = [new Address(ADDR_A).toScVal(), new Address(ADDR_B).toScVal()];
     const result = parseSep41Call('allowance', rawArgs);
     expect(result).not.toBeNull();
     expect(result!.args.from.formatted).toBe(ADDR_A);
@@ -191,10 +199,7 @@ describe('parseSep41Call — mint', () => {
 
 describe('parseSep41Call — burn', () => {
   it('decodes from and amount', () => {
-    const rawArgs = [
-      new Address(ADDR_A).toScVal(),
-      nativeToScVal(7_000_000n, { type: 'i128' }),
-    ];
+    const rawArgs = [new Address(ADDR_A).toScVal(), nativeToScVal(7_000_000n, { type: 'i128' })];
     const result = parseSep41Call('burn', rawArgs, 7, 'USDC');
     expect(result).not.toBeNull();
     expect(result!.args.from.formatted).toBe(ADDR_A);
@@ -218,10 +223,7 @@ describe('parseSep41Call — burn_from', () => {
 
 describe('parseSep41Call — clawback', () => {
   it('decodes from and amount', () => {
-    const rawArgs = [
-      new Address(ADDR_A).toScVal(),
-      nativeToScVal(2_000_000n, { type: 'i128' }),
-    ];
+    const rawArgs = [new Address(ADDR_A).toScVal(), nativeToScVal(2_000_000n, { type: 'i128' })];
     const result = parseSep41Call('clawback', rawArgs, 7, 'USDC');
     expect(result).not.toBeNull();
     expect(result!.humanReadable).toContain('clawed back');
@@ -421,9 +423,20 @@ describe('getSep41Abi', () => {
     const abi = getSep41Abi();
     const names = abi.functions.map((f) => f.name);
     const expected = [
-      'transfer', 'transfer_from', 'approve', 'balance_of', 'allowance',
-      'decimals', 'name', 'symbol', 'mint', 'burn', 'burn_from',
-      'clawback', 'set_admin', 'admin',
+      'transfer',
+      'transfer_from',
+      'approve',
+      'balance_of',
+      'allowance',
+      'decimals',
+      'name',
+      'symbol',
+      'mint',
+      'burn',
+      'burn_from',
+      'clawback',
+      'set_admin',
+      'admin',
     ];
     for (const fn of expected) {
       expect(names, `expected ${fn} in ABI`).toContain(fn);
