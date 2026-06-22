@@ -86,6 +86,7 @@ import { storageRouter } from './storage';
 import { storageTrapRouter } from './storage-trap';
 import { bn254Router } from './bn254';
 import { compilerRouter } from './compiler-router';
+import { reentrancyRouter } from './reentrancy';
 
 export const router = Router();
 
@@ -185,3 +186,6 @@ router.use('/feed/backfill', backfillRouter);
 router.use('/feed/sse', feedSSERouter);
 router.use('/market', marketRouter);
 router.use('/predict', predictRouter);
+
+// ── Security: Reentrancy Fortress (Issue #307) ────────────────────────────────
+router.use('/security/reentrancy', reentrancyRouter);
