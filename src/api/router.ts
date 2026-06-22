@@ -38,6 +38,7 @@ import { protocolRouter } from './protocol';
 import { aaRouter } from './aa';
 import { complianceRouter } from './compliance';
 import { nlqRouter } from './nlq';
+import { dataMarketRouter } from './data-market';
 
 // ── Pricing & Market Intelligence ──────────────────────────────────────────────
 import { marketRouter } from './market';
@@ -70,3 +71,9 @@ router.use('/tokens', tokenPricesRouter);
 router.use('/market', marketRouter);
 router.use('/portfolio', portfolioRouter);
 router.use('/market/alerts', alertsRouter);
+
+// ── Natural Language Query Interface (#328) ───────────────────────────────────
+router.use('/query', nlqRouter);
+
+// ── Historical Data Market (#327) ─────────────────────────────────────────────
+router.use('/data-market', dataMarketRouter);

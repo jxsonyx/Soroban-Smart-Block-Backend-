@@ -3177,3 +3177,218 @@ model NlAlert {
   @@index([active])
   @@map("nl_alerts")
 }
+
+// ── Historical Data Market (#327) ────────────────────────────────────────────
+
+enum ArchivalNodeStatus {
+  active
+  inactive
+  jailed
+  slashed
+}
+
+enum EpochStatus {
+  storing
+  stored
+  verifying
+  verified
+  failed
+  removed
+}
+
+enum ChallengeStatus {
+  pending
+  issued
+  responded
+  verified
+  failed
+  expired
+}
+
+enum RetrievalStatus {
+  pending
+  routing
+  in_progress
+  completed
+  failed
+  refunded
+}
+
+model ArchivalNode {
+  id               String             @id @default(cuid())
+  address          String             @unique
+  name             String?
+  endpoint         String
+  stakedAmount     Float              @default(0)
+  stakeAsset       String             @default("XLM")
+  commission       Float?
+  reputation       Float              @default(0)
+  reputationHistory Json?
+  totalEarnings    Float              @default(0)
+  totalServed      Int                @default(0)
+  totalChallenges  Int                @default(0)
+  challengesPassed Int                @default(0)
+  challengesFailed Int                @default(0)
+  uptime24h        Float              @default(0)
+  uptime7d         Float              @default(0)
+  uptime30d        Float              @default(0)
+  avgResponseTime  Int?
+  p95ResponseTime  Int?
+  maxStorageGb     Int?
+  usedStorageGb    Int?
+  supportedEpochs  Json?
+  slashedAmount    Float              @default(0)
+  status           ArchivalNodeStatus @default(active)
+  registeredAt     DateTime           @default(now())
+  lastSeen         DateTime           @default(now())
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+
+  epochs           ArchivalEpoch[]
+  challenges       StorageChallenge[]
+  retrievals       DataRetrieval[]
+  slaOffers        SlaOffer[]
+  slashes          ArchivalSlash[]
+
+  @@index([status])
+  @@index([reputation])
+  @@map("archival_nodes")
+}
+
+model ArchivalEpoch {
+  id          String        @id @default(cuid())
+  epochId     Int
+  startLedger Int
+  endLedger   Int
+  sizeBytes   BigInt?
+  checksum    String?
+  merkleRoot  String?
+  nodeId      String
+  node        ArchivalNode  @relation(fields: [nodeId], references: [id])
+  status      EpochStatus   @default(stored)
+  verifiedAt  DateTime?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  challenges  StorageChallenge[]
+  retrievals  DataRetrieval[]
+
+  @@index([nodeId])
+  @@index([epochId])
+  @@index([status])
+  @@map("archival_epochs")
+}
+
+model StorageChallenge {
+  id            String          @id @default(cuid())
+  epochId       String
+  epoch         ArchivalEpoch   @relation(fields: [epochId], references: [id])
+  nodeId        String
+  node          ArchivalNode    @relation(fields: [nodeId], references: [id])
+  challengeType String
+  challengeData Json?
+  responseData  Json?
+  status        ChallengeStatus @default(pending)
+  attempts      Int             @default(0)
+  proofVerified Boolean?
+  slashed       Boolean         @default(false)
+  issuedAt      DateTime        @default(now())
+  respondedAt   DateTime?
+  verifiedAt    DateTime?
+
+  slashes       ArchivalSlash[]
+
+  @@index([nodeId])
+  @@index([epochId])
+  @@index([status])
+  @@map("storage_challenges")
+}
+
+model DataRetrieval {
+  id           String          @id @default(cuid())
+  requester    String
+  epochId      String?
+  epoch        ArchivalEpoch?  @relation(fields: [epochId], references: [id])
+  nodeId       String?
+  node         ArchivalNode?   @relation(fields: [nodeId], references: [id])
+  ledgerRange  Json?
+  contractId   String?
+  fee          Float
+  feeAsset     String
+  status       RetrievalStatus
+  responseSize Int?
+  responseTime Int?
+  error        String?
+  createdAt    DateTime        @default(now())
+  completedAt  DateTime?
+
+  @@index([requester])
+  @@index([nodeId])
+  @@index([status])
+  @@map("data_retrievals")
+}
+
+model SlaOffer {
+  id          String        @id @default(cuid())
+  nodeId      String
+  node        ArchivalNode  @relation(fields: [nodeId], references: [id])
+  tier        String
+  uptime      Float
+  responseMs  Int
+  description String?
+  pricePerGb  Float
+  active      Boolean       @default(true)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  acceptances SlaAcceptance[]
+
+  @@index([nodeId])
+  @@index([tier])
+  @@map("sla_offers")
+}
+
+model SlaAcceptance {
+  id          String    @id @default(cuid())
+  offerId     String
+  offer       SlaOffer  @relation(fields: [offerId], references: [id])
+  requester   String
+  fee         Float
+  status      String    @default("active")
+  createdAt   DateTime  @default(now())
+
+  @@index([offerId])
+  @@index([requester])
+  @@map("sla_acceptances")
+}
+
+model ArchivalSlash {
+  id            String            @id @default(cuid())
+  nodeId        String
+  node          ArchivalNode      @relation(fields: [nodeId], references: [id])
+  challengeId   String?
+  challenge     StorageChallenge? @relation(fields: [challengeId], references: [id])
+  amount        Float
+  reason        String
+  createdAt     DateTime          @default(now())
+
+  appeals       ArchivalAppeal[]
+
+  @@index([nodeId])
+  @@map("archival_slashes")
+}
+
+model ArchivalAppeal {
+  id         String        @id @default(cuid())
+  slashId    String
+  slash      ArchivalSlash @relation(fields: [slashId], references: [id])
+  reason     String
+  evidence   Json?
+  status     String        @default("pending")
+  decision   String?
+  createdAt  DateTime      @default(now())
+  resolvedAt DateTime?
+
+  @@index([slashId])
+  @@map("archival_appeals")
+}
