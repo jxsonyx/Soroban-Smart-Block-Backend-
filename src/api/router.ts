@@ -37,6 +37,7 @@ import { tokenMetadataRouter } from './token-metadata';
 import { protocolRouter } from './protocol';
 import { aaRouter } from './aa';
 import { complianceRouter } from './compliance';
+import { nlqRouter } from './nlq';
 
 export const router = Router();
 
@@ -57,3 +58,6 @@ router.use('/token-metadata', tokenMetadataRouter);
 router.use('/protocol', protocolRouter);
 router.use('/aa', aaRouter);
 router.use('/compliance', complianceRouter);
+
+// ── Natural Language Query Interface (#328) ───────────────────────────────────
+router.use('/query', nlqRouter);
