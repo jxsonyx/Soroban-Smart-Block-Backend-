@@ -1209,26 +1209,33 @@ model Developer {
 }
 
 model DevApiKey {
-  id            String    @id
-  developerId   String
-  keyPrefix     String
-  keyHash       String
-  name          String
-  permissions   Json      @default("{}")
-  allowedIps    Json?
-  allowedDomains Json?
-  expiresAt     DateTime?
-  lastUsedAt    DateTime?
-  status        String    @default("active")
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  id                String    @id
+  developerId       String
+  keyPrefix         String
+  keyHash           String
+  name              String
+  permissions       Json      @default("{}")
+  allowedIps        Json?
+  allowedDomains    Json?
+  allowedEndpoints  Json?     // endpoint whitelist (optional)
+  tier              String    @default("free") // "free" | "developer" | "pro" | "enterprise"
+  rateLimitOverride Int?      // custom req/min override
+  revokedAt         DateTime?
+  usageCount        Int       @default(0)
+  expiresAt         DateTime?
+  lastUsedAt        DateTime?
+  status            String    @default("active")
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
 
   developer     Developer     @relation(fields: [developerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   usageRecords  UsageRecord[]
 
   @@index([developerId])
   @@index([keyPrefix])
+  @@index([keyHash])
   @@index([status])
+  @@index([tier])
 }
 
 model DevWebhook {
@@ -3393,95 +3400,234 @@ model ArchivalAppeal {
   @@map("archival_appeals")
 }
 
-// ── Cross-Chain Bridge Tracker ─────────────────────────────────────────────────
+// =========================================================================
+// Migration: 20260623000000_nft_collection_engine
+// NFT Collection Discovery, Rarity Engine, Marketplace Analytics & Portfolio Tracker
+// =========================================================================
 
-model BridgeTransaction {
-  id                    String   @id @default(uuid())
-  transactionHash       String   @unique
-  sourceChain           String   @db.VarChar(50)
-  destinationChain      String   @db.VarChar(50)
-  asset                 String   @db.VarChar(50)
-  amount                Decimal  @db.Decimal(30, 7)
-  sender                String   @db.VarChar(100)
-  recipient             String   @db.VarChar(100)
-  protocol              String   @db.VarChar(50)
-  status                String   @default("pending") @db.VarChar(20)
-  confirmations         Int      @default(0)
-  requiredConfirmations Int      @default(0)
-  sourceTimestamp       DateTime?
-  destinationTimestamp  DateTime?
-  estimatedArrivalAt    DateTime?
-  bridgeFee             Decimal? @db.Decimal(20, 7)
-  sourceTxUrl           String?
-  destinationTxUrl      String?
-  metadata              Json?
-  createdAt             DateTime @default(now())
-  updatedAt             DateTime @updatedAt
+model NftCollection {
+  id               String    @id @default(cuid())
+  contractAddress  String    @unique
+  name             String?
+  symbol           String?
+  description      String?
+  category         String?   // "art" | "gaming" | "music" | "pfp" | "collectible" | "virtual-land" | "domain" | "soulbound"
+  totalSupply      Int       @default(0)
+  uniqueHolders    Int       @default(0)
+  floorPrice       Decimal?
+  floorPriceToken  String?
+  floorPriceUsd    Decimal?
+  totalVolume      Decimal   @default(0)
+  volume24h        Decimal   @default(0)
+  volume7d         Decimal   @default(0)
+  volume30d        Decimal   @default(0)
+  avgPrice24h      Decimal?
+  avgPrice7d       Decimal?
+  marketCap        Decimal?
+  mintPrice        Decimal?
+  mintStart        DateTime?
+  mintEnd          DateTime?
+  royaltyPct       Float?
+  royaltyRecipient String?
+  website          String?
+  discord          String?
+  twitter          String?
+  logoUri          String?
+  bannerUri        String?
+  isVerified       Boolean   @default(false)
+  isSpam           Boolean   @default(false)
+  isMintable       Boolean   @default(false)
+  detectedAt       DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  lastSaleAt       DateTime?
 
-  @@index([protocol])
-  @@index([sourceChain])
-  @@index([destinationChain])
-  @@index([status])
-  @@index([sender])
-  @@index([recipient])
-  @@index([createdAt])
-  @@map("bridge_transactions")
+  items   NftItem[]
+  traits  NftTrait[]
+  sales   NftSale[]
+  listings NftListing[]
+  stats   NftCollectionStats[]
+  activity NftActivity[]
+
+  @@index([volume24h(sort: Desc)])
+  @@index([volume7d(sort: Desc)])
+  @@index([uniqueHolders(sort: Desc)])
+  @@index([marketCap(sort: Desc)])
+  @@index([floorPrice(sort: Desc)])
+  @@index([category])
 }
 
-model BridgeAlert {
-  id              String   @id @default(uuid())
-  type            String   @db.VarChar(50)
-  severity        String   @default("info") @db.VarChar(20)
-  protocol        String?  @db.VarChar(50)
-  chain           String?  @db.VarChar(50)
-  address         String?  @db.VarChar(100)
-  transactionHash String?  @db.VarChar(100)
-  asset           String?  @db.VarChar(50)
-  amount          Decimal? @db.Decimal(30, 7)
-  message         String   @db.Text
-  data            Json?
-  acknowledged    Boolean  @default(false)
-  triggeredAt     DateTime @default(now())
+model NftItem {
+  id                String    @id @default(cuid())
+  collectionId      String
+  tokenId           String
+  owner             String
+  mintedAt          DateTime
+  mintTxHash        String
+  mintPrice         Decimal?
+  lastSalePrice     Decimal?
+  lastSalePriceUsd  Decimal?
+  lastSaleAt        DateTime?
+  saleCount         Int       @default(0)
+  metadata          Json?
+  metadataUri       String?
+  metadataFetchedAt DateTime?
+  rarityScore       Float?
+  rarityRank        Int?
+  isListed          Boolean   @default(false)
+  listingPrice      Decimal?
+  listingMarket     String?
+  isSoulbound       Boolean   @default(false)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
 
-  @@index([type])
-  @@index([severity])
-  @@index([address])
-  @@index([triggeredAt])
-  @@map("bridge_alerts")
+  collection NftCollection @relation(fields: [collectionId], references: [id])
+
+  @@unique([collectionId, tokenId])
+  @@index([owner])
+  @@index([rarityScore(sort: Desc)])
+  @@index([lastSaleAt(sort: Desc)])
+  @@index([collectionId])
 }
 
-model MonitoredAddress {
-  id           String   @id @default(uuid())
-  address      String   @db.VarChar(100)
-  chain        String   @db.VarChar(50)
-  label        String?
-  minAlertUsd  Decimal? @db.Decimal(20, 2)
-  alertOnTx    Boolean  @default(true)
-  alertOnBridging Boolean @default(true)
-  active       Boolean  @default(true)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+model NftTrait {
+  id           String  @id @default(cuid())
+  collectionId String
+  traitType    String
+  traitValue   String
+  count        Int     @default(0)
+  rarityScore  Float?
+  rarityTier   String? // "common" | "uncommon" | "rare" | "epic" | "legendary" | "mythic"
 
-  @@unique([address, chain])
-  @@index([address])
-  @@index([chain])
-  @@map("monitored_addresses")
+  collection NftCollection @relation(fields: [collectionId], references: [id])
+
+  @@unique([collectionId, traitType, traitValue])
+  @@index([collectionId])
 }
 
-model BridgeVolume {
-  id          String   @id @default(uuid())
-  protocol    String   @db.VarChar(50)
-  chain       String   @db.VarChar(50)
-  asset       String   @db.VarChar(50)
-  volume      Decimal  @db.Decimal(30, 7)
-  count       Int      @default(0)
-  period      String   @db.VarChar(20)
-  periodStart DateTime
-  createdAt   DateTime @default(now())
+model NftSale {
+  id             String    @id @default(cuid())
+  collectionId   String
+  itemId         String?
+  tokenId        String
+  seller         String
+  buyer          String
+  price          Decimal
+  priceUsd       Decimal?
+  priceToken     String?
+  txHash         String    @unique
+  ledgerSequence Int?
+  marketplace    String?
+  saleType       String    // "sale" | "offer" | "auction" | "bid"
+  saleAt         DateTime
+  indexedAt      DateTime  @default(now())
+  isWashTrade    Boolean   @default(false)
+  washTradeScore Float?
 
-  @@unique([protocol, chain, asset, period, periodStart])
-  @@index([protocol, period])
-  @@index([chain, period])
-  @@index([periodStart])
-  @@map("bridge_volumes")
+  collection NftCollection @relation(fields: [collectionId], references: [id])
+
+  @@index([collectionId, saleAt])
+  @@index([seller])
+  @@index([buyer])
+  @@index([isWashTrade])
+}
+
+model NftListing {
+  id           String    @id @default(cuid())
+  collectionId String
+  itemId       String
+  tokenId      String
+  seller       String
+  price        Decimal
+  priceUsd     Decimal?
+  priceToken   String?
+  marketplace  String?
+  listedAt     DateTime
+  expiresAt    DateTime?
+  status       String    // "active" | "cancelled" | "sold"
+  cancelledAt  DateTime?
+
+  collection NftCollection @relation(fields: [collectionId], references: [id])
+
+  @@index([collectionId, status])
+  @@index([seller])
+}
+
+model NftCollectionStats {
+  id             String    @id @default(cuid())
+  collectionId   String
+  timestamp      DateTime
+  floorPrice     Decimal?
+  floorPriceUsd  Decimal?
+  totalVolume    Decimal
+  volume24h      Decimal
+  avgPrice24h    Decimal?
+  uniqueHolders  Int
+  totalSupply    Int
+  washVolume24h  Decimal   @default(0)
+  washTxCount24h Int       @default(0)
+
+  collection NftCollection @relation(fields: [collectionId], references: [id])
+
+  @@unique([collectionId, timestamp])
+  @@index([collectionId, timestamp(sort: Desc)])
+}
+
+model NftPortfolio {
+  id               String    @id @default(cuid())
+  userId           String
+  owner            String
+  name             String?
+  items            String[]  @default([])
+  totalValueUsd    Decimal?
+  totalPaidUsd     Decimal?
+  unrealizedPnlUsd Decimal?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  @@index([userId])
+  @@index([owner])
+}
+
+model NftActivity {
+  id             String    @id @default(cuid())
+  collectionId   String
+  itemId         String?
+  tokenId        String
+  activityType   String    // "mint" | "transfer" | "sale" | "offer" | "list" | "cancel" | "burn" | "bid"
+  fromAddress    String?
+  toAddress      String?
+  price          Decimal?
+  priceUsd       Decimal?
+  txHash         String
+  ledgerSequence Int?
+  occurredAt     DateTime
+  metadata       Json?
+
+  collection NftCollection @relation(fields: [collectionId], references: [id])
+
+  @@index([collectionId, occurredAt(sort: Desc)])
+  @@index([activityType, occurredAt(sort: Desc)])
+  @@index([txHash])
+}
+
+model NftMarketplace {
+  id               String    @id @default(cuid())
+  contractAddress  String    @unique
+  name             String?
+  description      String?
+  website          String?
+  logoUri          String?
+  totalVolume      Decimal   @default(0)
+  volume24h        Decimal   @default(0)
+  totalListings    Int       @default(0)
+  activeListings   Int       @default(0)
+  uniqueCollections Int      @default(0)
+  activeTraders24h Int       @default(0)
+  feePct           Float?
+  isVerified       Boolean   @default(false)
+  isActive         Boolean   @default(true)
+  detectedAt       DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  @@index([isActive])
 }

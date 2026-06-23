@@ -78,6 +78,6 @@ router.use('/query', nlqRouter);
 // ── Historical Data Market (#327) ─────────────────────────────────────────────
 router.use('/data-market', dataMarketRouter);
 
-// ── Cross-Chain Bridge Tracker ────────────────────────────────────────────────
-import { bridgeTrackerRouter } from './bridge-tracker';
-router.use('/bridge-tracker', bridgeTrackerRouter);
+// ── NFT Collection Discovery, Rarity Engine, Marketplace Analytics & Portfolio ──
+import { nftRouter } from './nft';
+router.use('/nft', nftRouter);
