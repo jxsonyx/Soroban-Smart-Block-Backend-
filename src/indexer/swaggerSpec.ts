@@ -102,7 +102,8 @@ const options: swaggerJsdoc.Options = {
           properties: {
             id: {
               type: 'string',
-              example: '3389e9f0f1a4e32477b1c0d9e8a6f5b4c3d2e1f0a9b8c7d6e5f40312233445566-AAAADwAAAAh0cmFuc2Zlcg==',
+              example:
+                '3389e9f0f1a4e32477b1c0d9e8a6f5b4c3d2e1f0a9b8c7d6e5f40312233445566-AAAADwAAAAh0cmFuc2Zlcg==',
             },
             transactionHash: {
               type: 'string',
@@ -146,7 +147,11 @@ const options: swaggerJsdoc.Options = {
               },
             },
             ledgerSequence: { type: 'integer', example: 3168075 },
-            ledgerCloseTime: { type: 'string', format: 'date-time', example: '2026-06-19T07:24:26.000Z' },
+            ledgerCloseTime: {
+              type: 'string',
+              format: 'date-time',
+              example: '2026-06-19T07:24:26.000Z',
+            },
             compacted: {
               type: 'boolean',
               description: 'True once the event is rolled into a SettlementBatchSummary (#220)',
@@ -168,7 +173,11 @@ const options: swaggerJsdoc.Options = {
               example: '3389e9f0f1a4e32477b1c0d9e8a6f5b4c3d2e1f0a9b8c7d6e5f40312233445566',
             },
             ledgerSequence: { type: 'integer', example: 3168075 },
-            ledgerCloseTime: { type: 'string', format: 'date-time', example: '2026-06-19T07:24:26.000Z' },
+            ledgerCloseTime: {
+              type: 'string',
+              format: 'date-time',
+              example: '2026-06-19T07:24:26.000Z',
+            },
             sourceAccount: {
               type: 'string',
               example: 'GBZXN7PIRZGNMHGA7MUUUF4GWPY5AYPV6LY4UV2GL6VJGIQRXFDNMADI',
@@ -202,7 +211,12 @@ const options: swaggerJsdoc.Options = {
               type: 'object',
               nullable: true,
               description: '#48: CPU, memory, and ledger footprint metrics',
-              example: { cpuInstructions: 24500000, memoryBytes: 1048576, readBytes: 4096, writeBytes: 512 },
+              example: {
+                cpuInstructions: 24500000,
+                memoryBytes: 1048576,
+                readBytes: 4096,
+                writeBytes: 512,
+              },
             },
             failureReason: {
               type: 'string',
@@ -223,16 +237,29 @@ const options: swaggerJsdoc.Options = {
           type: 'object',
           properties: {
             id: { type: 'string', example: 'clz9q1x4t0000s6h2abcd1234' },
-            address: { type: 'string', example: 'CALLD5GHXR4QSTKHSWQEK4UVMHM4QHU4KZ5G4SBKWY7C7TXKZ45RJ4M5' },
+            address: {
+              type: 'string',
+              example: 'CALLD5GHXR4QSTKHSWQEK4UVMHM4QHU4KZ5G4SBKWY7C7TXKZ45RJ4M5',
+            },
             name: { type: 'string', nullable: true, example: 'USD Coin' },
-            description: { type: 'string', nullable: true, example: 'USDC stablecoin token contract' },
+            description: {
+              type: 'string',
+              nullable: true,
+              example: 'USDC stablecoin token contract',
+            },
             abi: {
               type: 'object',
               nullable: true,
               description: 'ABI-like metadata: functions, events, types',
               example: {
                 functions: [
-                  { name: 'transfer', inputs: [{ name: 'to', type: 'Address' }, { name: 'amount', type: 'i128' }] },
+                  {
+                    name: 'transfer',
+                    inputs: [
+                      { name: 'to', type: 'Address' },
+                      { name: 'amount', type: 'i128' },
+                    ],
+                  },
                 ],
               },
             },
@@ -263,7 +290,10 @@ const options: swaggerJsdoc.Options = {
         Token: {
           type: 'object',
           properties: {
-            address: { type: 'string', example: 'CALLD5GHXR4QSTKHSWQEK4UVMHM4QHU4KZ5G4SBKWY7C7TXKZ45RJ4M5' },
+            address: {
+              type: 'string',
+              example: 'CALLD5GHXR4QSTKHSWQEK4UVMHM4QHU4KZ5G4SBKWY7C7TXKZ45RJ4M5',
+            },
             tokenName: { type: 'string', nullable: true, example: 'USD Coin' },
             tokenSymbol: { type: 'string', nullable: true, example: 'USDC' },
             tokenDecimals: { type: 'integer', nullable: true, example: 7 },
@@ -306,15 +336,25 @@ const options: swaggerJsdoc.Options = {
                       properties: {
                         key: {
                           type: 'string',
-                          example: 'Balance(GBZXN7PIRZGNMHGA7MUUUF4GWPY5AYPV6LY4UV2GL6VJGIQRXFDNMADI)',
+                          example:
+                            'Balance(GBZXN7PIRZGNMHGA7MUUUF4GWPY5AYPV6LY4UV2GL6VJGIQRXFDNMADI)',
                         },
                         before: { example: '0' },
                         after: { example: '1000000000' },
-                        changeType: { type: 'string', enum: ['write', 'read', 'delete'], example: 'write' },
+                        changeType: {
+                          type: 'string',
+                          enum: ['write', 'read', 'delete'],
+                          example: 'write',
+                        },
                       },
                     },
                     example: [
-                      { key: 'Balance(GBZX...)', before: '0', after: '1000000000', changeType: 'write' },
+                      {
+                        key: 'Balance(GBZX...)',
+                        before: '0',
+                        after: '1000000000',
+                        changeType: 'write',
+                      },
                     ],
                   },
                   returnValue: {
@@ -375,7 +415,15 @@ const options: swaggerJsdoc.Options = {
           properties: {
             errorType: {
               type: 'string',
-              enum: ['panic', 'contract_error', 'resource_limit', 'auth_error', 'wasm_error', 'storage_error', 'unknown'],
+              enum: [
+                'panic',
+                'contract_error',
+                'resource_limit',
+                'auth_error',
+                'wasm_error',
+                'storage_error',
+                'unknown',
+              ],
               example: 'contract_error',
             },
             message: { type: 'string', example: 'Contract call failed: insufficient balance' },
@@ -394,7 +442,11 @@ const options: swaggerJsdoc.Options = {
                 },
               },
               example: [
-                { depth: 0, contractId: 'CALLD5GHXR4QSTKHSWQEK4UVMHM4QHU4KZ5G4SBKWY7C7TXKZ45RJ4M5', function: 'swap' },
+                {
+                  depth: 0,
+                  contractId: 'CALLD5GHXR4QSTKHSWQEK4UVMHM4QHU4KZ5G4SBKWY7C7TXKZ45RJ4M5',
+                  function: 'swap',
+                },
               ],
             },
             suggestedFixes: {
@@ -411,14 +463,19 @@ const options: swaggerJsdoc.Options = {
             name: { type: 'string', example: 'zk-SNARK' },
             description: {
               type: 'string',
-              example: 'Zero-knowledge Succinct Non-Interactive Argument of Knowledge. Groth16 and PLONK proving systems for private transactions.',
+              example:
+                'Zero-knowledge Succinct Non-Interactive Argument of Knowledge. Groth16 and PLONK proving systems for private transactions.',
             },
             category: {
               type: 'string',
               description: 'transfer | zkp | address | mixer | voting | data | storage | analytics',
               example: 'zkp',
             },
-            strength: { type: 'integer', description: 'Relative privacy strength weight', example: 15 },
+            strength: {
+              type: 'integer',
+              description: 'Relative privacy strength weight',
+              example: 15,
+            },
           },
         },
         // A detected privacy-preserving transaction (full PrivacyTransaction record).
@@ -427,12 +484,26 @@ const options: swaggerJsdoc.Options = {
           type: 'object',
           properties: {
             id: { type: 'string', example: 'clz9q1x4t0000s6h2privtx01' },
-            txHash: { type: 'string', example: '3389e9f0f1a4e32477b1c0d9e8a6f5b4c3d2e1f0a9b8c7d6e5f40312233445566' },
+            txHash: {
+              type: 'string',
+              example: '3389e9f0f1a4e32477b1c0d9e8a6f5b4c3d2e1f0a9b8c7d6e5f40312233445566',
+            },
             protocols: {
               type: 'array',
               items: {
                 type: 'string',
-                enum: ['SHIELDED_TRANSFER', 'ZK_SNARK', 'ZK_STARK', 'BULLETPROOF', 'STEALTH_ADDRESS', 'MIXER', 'PRIVATE_VOTING', 'OFF_CHAIN_DATA', 'ENCRYPTED_STATE', 'DIFFERENTIAL_PRIVACY'],
+                enum: [
+                  'SHIELDED_TRANSFER',
+                  'ZK_SNARK',
+                  'ZK_STARK',
+                  'BULLETPROOF',
+                  'STEALTH_ADDRESS',
+                  'MIXER',
+                  'PRIVATE_VOTING',
+                  'OFF_CHAIN_DATA',
+                  'ENCRYPTED_STATE',
+                  'DIFFERENTIAL_PRIVACY',
+                ],
               },
               example: ['ZK_SNARK', 'SHIELDED_TRANSFER'],
             },
@@ -440,7 +511,14 @@ const options: swaggerJsdoc.Options = {
               type: 'array',
               items: {
                 type: 'string',
-                enum: ['SENDER_PRIVACY', 'RECIPIENT_PRIVACY', 'AMOUNT_PRIVACY', 'ASSET_TYPE_PRIVACY', 'VOTE_PRIVACY', 'FULL_PRIVACY'],
+                enum: [
+                  'SENDER_PRIVACY',
+                  'RECIPIENT_PRIVACY',
+                  'AMOUNT_PRIVACY',
+                  'ASSET_TYPE_PRIVACY',
+                  'VOTE_PRIVACY',
+                  'FULL_PRIVACY',
+                ],
               },
               example: ['SENDER_PRIVACY', 'AMOUNT_PRIVACY'],
             },
@@ -452,9 +530,24 @@ const options: swaggerJsdoc.Options = {
             },
             anonymitySetSize: { type: 'integer', nullable: true, example: 128 },
             effectiveAnonymitySet: { type: 'integer', nullable: true, example: 96 },
-            privacyScore: { type: 'number', nullable: true, description: 'Privacy score (0-100)', example: 87.5 },
-            riskScore: { type: 'number', nullable: true, description: 'De-anonymization risk score (0-100)', example: 12 },
-            totalValue: { type: 'string', nullable: true, description: 'Raw value in base units', example: '1000000000' },
+            privacyScore: {
+              type: 'number',
+              nullable: true,
+              description: 'Privacy score (0-100)',
+              example: 87.5,
+            },
+            riskScore: {
+              type: 'number',
+              nullable: true,
+              description: 'De-anonymization risk score (0-100)',
+              example: 12,
+            },
+            totalValue: {
+              type: 'string',
+              nullable: true,
+              description: 'Raw value in base units',
+              example: '1000000000',
+            },
             usdValue: { type: 'number', nullable: true, example: 100 },
             assetType: { type: 'string', nullable: true, example: 'USDC' },
             contractAddresses: {
@@ -477,7 +570,10 @@ const options: swaggerJsdoc.Options = {
           type: 'object',
           properties: {
             id: { type: 'string', example: 'clz9q1x4t0000s6h2report01' },
-            address: { type: 'string', example: 'GBZXN7PIRZGNMHGA7MUUUF4GWPY5AYPV6LY4UV2GL6VJGIQRXFDNMADI' },
+            address: {
+              type: 'string',
+              example: 'GBZXN7PIRZGNMHGA7MUUUF4GWPY5AYPV6LY4UV2GL6VJGIQRXFDNMADI',
+            },
             totalPrivateTx: { type: 'integer', example: 12 },
             protocolsUsed: {
               type: 'array',
@@ -494,8 +590,16 @@ const options: swaggerJsdoc.Options = {
               items: { type: 'string' },
               example: ['GAAZI4TCR3TY5OJHCTJC2A4QSY6CJWJH5IAJTGKIN2ER7LBNVKOCCWN'],
             },
-            lastActivity: { type: 'string', format: 'date-time', example: '2026-06-19T07:24:26.000Z' },
-            reportGeneratedAt: { type: 'string', format: 'date-time', example: '2026-06-19T07:24:27.000Z' },
+            lastActivity: {
+              type: 'string',
+              format: 'date-time',
+              example: '2026-06-19T07:24:26.000Z',
+            },
+            reportGeneratedAt: {
+              type: 'string',
+              format: 'date-time',
+              example: '2026-06-19T07:24:27.000Z',
+            },
           },
         },
         // A de-anonymization finding linking a private transaction to an address.
@@ -503,8 +607,14 @@ const options: swaggerJsdoc.Options = {
           type: 'object',
           properties: {
             id: { type: 'string', example: 'clz9q1x4t0000s6h2finding1' },
-            sourceTx: { type: 'string', example: '3389e9f0f1a4e32477b1c0d9e8a6f5b4c3d2e1f0a9b8c7d6e5f40312233445566' },
-            targetAddress: { type: 'string', example: 'GBZXN7PIRZGNMHGA7MUUUF4GWPY5AYPV6LY4UV2GL6VJGIQRXFDNMADI' },
+            sourceTx: {
+              type: 'string',
+              example: '3389e9f0f1a4e32477b1c0d9e8a6f5b4c3d2e1f0a9b8c7d6e5f40312233445566',
+            },
+            targetAddress: {
+              type: 'string',
+              example: 'GBZXN7PIRZGNMHGA7MUUUF4GWPY5AYPV6LY4UV2GL6VJGIQRXFDNMADI',
+            },
             technique: {
               type: 'string',
               description: 'Heuristic used: timing | amount_correlation | taint | common_input',
@@ -522,7 +632,11 @@ const options: swaggerJsdoc.Options = {
               example: ['GAAZI4TCR3TY5OJHCTJC2A4QSY6CJWJH5IAJTGKIN2ER7LBNVKOCCWN'],
             },
             probability: { type: 'number', nullable: true, example: 0.74 },
-            detectedAt: { type: 'string', format: 'date-time', example: '2026-06-19T07:24:26.000Z' },
+            detectedAt: {
+              type: 'string',
+              format: 'date-time',
+              example: '2026-06-19T07:24:26.000Z',
+            },
           },
         },
         // A periodic snapshot of privacy adoption metrics (PrivacyAnalytics record).
@@ -531,11 +645,23 @@ const options: swaggerJsdoc.Options = {
           properties: {
             id: { type: 'string', example: 'clz9q1x4t0000s6h2analyt01' },
             timestamp: { type: 'string', format: 'date-time', example: '2026-06-19T07:24:26.000Z' },
-            period: { type: 'string', description: 'Aggregation period: hour | day | week', example: 'day' },
+            period: {
+              type: 'string',
+              description: 'Aggregation period: hour | day | week',
+              example: 'day',
+            },
             totalPrivateTx: { type: 'integer', example: 320 },
             totalTx: { type: 'integer', example: 15430 },
-            totalVolume: { type: 'string', description: 'Raw value in base units', example: '4500000000000' },
-            privacyShare: { type: 'number', description: 'Private tx / total tx (0-1)', example: 0.0207 },
+            totalVolume: {
+              type: 'string',
+              description: 'Raw value in base units',
+              example: '4500000000000',
+            },
+            privacyShare: {
+              type: 'number',
+              description: 'Private tx / total tx (0-1)',
+              example: 0.0207,
+            },
             volumeShare: { type: 'number', nullable: true, example: 0.034 },
             byProtocol: {
               type: 'object',
@@ -559,7 +685,18 @@ const options: swaggerJsdoc.Options = {
             id: { type: 'string', example: 'clz9q1x4t0000s6h2detail01' },
             protocol: {
               type: 'string',
-              enum: ['SHIELDED_TRANSFER', 'ZK_SNARK', 'ZK_STARK', 'BULLETPROOF', 'STEALTH_ADDRESS', 'MIXER', 'PRIVATE_VOTING', 'OFF_CHAIN_DATA', 'ENCRYPTED_STATE', 'DIFFERENTIAL_PRIVACY'],
+              enum: [
+                'SHIELDED_TRANSFER',
+                'ZK_SNARK',
+                'ZK_STARK',
+                'BULLETPROOF',
+                'STEALTH_ADDRESS',
+                'MIXER',
+                'PRIVATE_VOTING',
+                'OFF_CHAIN_DATA',
+                'ENCRYPTED_STATE',
+                'DIFFERENTIAL_PRIVACY',
+              ],
               example: 'ZK_SNARK',
             },
             timestamp: { type: 'string', format: 'date-time', example: '2026-06-19T07:24:26.000Z' },
@@ -583,12 +720,36 @@ const options: swaggerJsdoc.Options = {
             id: { type: 'string', example: 'clz9q1x4t0000s6h2snap01' },
             protocol: {
               type: 'string',
-              enum: ['SHIELDED_TRANSFER', 'ZK_SNARK', 'ZK_STARK', 'BULLETPROOF', 'STEALTH_ADDRESS', 'MIXER', 'PRIVATE_VOTING', 'OFF_CHAIN_DATA', 'ENCRYPTED_STATE', 'DIFFERENTIAL_PRIVACY'],
+              enum: [
+                'SHIELDED_TRANSFER',
+                'ZK_SNARK',
+                'ZK_STARK',
+                'BULLETPROOF',
+                'STEALTH_ADDRESS',
+                'MIXER',
+                'PRIVATE_VOTING',
+                'OFF_CHAIN_DATA',
+                'ENCRYPTED_STATE',
+                'DIFFERENTIAL_PRIVACY',
+              ],
               example: 'MIXER',
             },
-            contractAddress: { type: 'string', nullable: true, example: 'CALLD5GHXR4QSTKHSWQEK4UVMHM4QHU4KZ5G4SBKWY7C7TXKZ45RJ4M5' },
-            setSize: { type: 'integer', description: 'Theoretical anonymity set size', example: 128 },
-            effectiveSetSize: { type: 'integer', nullable: true, description: 'Effective set size after de-anonymization heuristics', example: 96 },
+            contractAddress: {
+              type: 'string',
+              nullable: true,
+              example: 'CALLD5GHXR4QSTKHSWQEK4UVMHM4QHU4KZ5G4SBKWY7C7TXKZ45RJ4M5',
+            },
+            setSize: {
+              type: 'integer',
+              description: 'Theoretical anonymity set size',
+              example: 128,
+            },
+            effectiveSetSize: {
+              type: 'integer',
+              nullable: true,
+              description: 'Effective set size after de-anonymization heuristics',
+              example: 96,
+            },
             timestamp: { type: 'string', format: 'date-time', example: '2026-06-19T07:24:26.000Z' },
           },
         },
@@ -619,20 +780,50 @@ const options: swaggerJsdoc.Options = {
           type: 'object',
           properties: {
             id: { type: 'string', example: 'clz9q1x4t0000s6h2mevevt01' },
-            txHash: { type: 'string', example: '3389e9f0f1a4e32477b1c0d9e8a6f5b4c3d2e1f0a9b8c7d6e5f40312233445566' },
+            txHash: {
+              type: 'string',
+              example: '3389e9f0f1a4e32477b1c0d9e8a6f5b4c3d2e1f0a9b8c7d6e5f40312233445566',
+            },
             ledgerSeq: { type: 'integer', example: 3168075 },
             timestamp: { type: 'string', format: 'date-time', example: '2026-06-19T07:24:26.000Z' },
             mevType: {
               type: 'string',
-              enum: ['sandwich', 'flash_loan_attack', 'backrunning', 'displacement', 'jit_liquidity', 'cex_dex_arbitrage', 'cross_dex_arbitrage', 'liquidation', 'nft_mev'],
+              enum: [
+                'sandwich',
+                'flash_loan_attack',
+                'backrunning',
+                'displacement',
+                'jit_liquidity',
+                'cex_dex_arbitrage',
+                'cross_dex_arbitrage',
+                'liquidation',
+                'nft_mev',
+              ],
               example: 'sandwich',
             },
-            victimAddress: { type: 'string', nullable: true, example: 'GBZXN7PIRZGNMHGA7MUUUF4GWPY5AYPV6LY4UV2GL6VJGIQRXFDNMADI' },
-            attackerAddress: { type: 'string', nullable: true, example: 'GAAZI4TCR3TY5OJHCTJC2A4QSY6CJWJH5IAJTGKIN2ER7LBNVKOCCWN' },
-            protocolAddress: { type: 'string', nullable: true, example: 'CALLD5GHXR4QSTKHSWQEK4UVMHM4QHU4KZ5G4SBKWY7C7TXKZ45RJ4M5' },
+            victimAddress: {
+              type: 'string',
+              nullable: true,
+              example: 'GBZXN7PIRZGNMHGA7MUUUF4GWPY5AYPV6LY4UV2GL6VJGIQRXFDNMADI',
+            },
+            attackerAddress: {
+              type: 'string',
+              nullable: true,
+              example: 'GAAZI4TCR3TY5OJHCTJC2A4QSY6CJWJH5IAJTGKIN2ER7LBNVKOCCWN',
+            },
+            protocolAddress: {
+              type: 'string',
+              nullable: true,
+              example: 'CALLD5GHXR4QSTKHSWQEK4UVMHM4QHU4KZ5G4SBKWY7C7TXKZ45RJ4M5',
+            },
             tokenIn: { type: 'string', nullable: true, example: 'USDC' },
             tokenOut: { type: 'string', nullable: true, example: 'XLM' },
-            amountIn: { type: 'string', nullable: true, description: 'Raw amount in base units', example: '1000000000' },
+            amountIn: {
+              type: 'string',
+              nullable: true,
+              description: 'Raw amount in base units',
+              example: '1000000000',
+            },
             amountOut: { type: 'string', nullable: true, example: '987000000' },
             profitAmount: { type: 'string', nullable: true, example: '15240000' },
             profitUsd: { type: 'number', nullable: true, example: 152.4 },
@@ -644,12 +835,19 @@ const options: swaggerJsdoc.Options = {
               description: 'Bundle ordering (front-run, victim, back-run tx hashes)',
               example: { frontRun: '3389e9f0...', victim: 'a1b2c3d4...', backRun: '9f8e7d6c...' },
             },
-            confidence: { type: 'number', description: 'Detection confidence (0-1)', example: 0.95 },
+            confidence: {
+              type: 'number',
+              description: 'Detection confidence (0-1)',
+              example: 0.95,
+            },
             details: {
               type: 'object',
               nullable: true,
               description: 'Detector-specific metadata',
-              example: { pool: 'CALLD5GHXR4QSTKHSWQEK4UVMHM4QHU4KZ5G4SBKWY7C7TXKZ45RJ4M5', slippage: 0.05 },
+              example: {
+                pool: 'CALLD5GHXR4QSTKHSWQEK4UVMHM4QHU4KZ5G4SBKWY7C7TXKZ45RJ4M5',
+                slippage: 0.05,
+              },
             },
             createdAt: { type: 'string', format: 'date-time', example: '2026-06-19T07:24:27.000Z' },
           },
@@ -659,11 +857,24 @@ const options: swaggerJsdoc.Options = {
           type: 'object',
           properties: {
             id: { type: 'string', example: 'clz9q1x4t0000s6h2victim01' },
-            address: { type: 'string', example: 'GBZXN7PIRZGNMHGA7MUUUF4GWPY5AYPV6LY4UV2GL6VJGIQRXFDNMADI' },
+            address: {
+              type: 'string',
+              example: 'GBZXN7PIRZGNMHGA7MUUUF4GWPY5AYPV6LY4UV2GL6VJGIQRXFDNMADI',
+            },
             totalLossUsd: { type: 'number', example: 180.6 },
             incidentCount: { type: 'integer', example: 3 },
-            lastIncidentAt: { type: 'string', format: 'date-time', nullable: true, example: '2026-06-19T07:24:26.000Z' },
-            firstIncidentAt: { type: 'string', format: 'date-time', nullable: true, example: '2026-06-01T00:00:00.000Z' },
+            lastIncidentAt: {
+              type: 'string',
+              format: 'date-time',
+              nullable: true,
+              example: '2026-06-19T07:24:26.000Z',
+            },
+            firstIncidentAt: {
+              type: 'string',
+              format: 'date-time',
+              nullable: true,
+              example: '2026-06-01T00:00:00.000Z',
+            },
             protectionScore: { type: 'number', nullable: true, example: 50 },
             createdAt: { type: 'string', format: 'date-time', example: '2026-06-01T00:00:00.000Z' },
             updatedAt: { type: 'string', format: 'date-time', example: '2026-06-19T07:24:27.000Z' },
@@ -674,19 +885,47 @@ const options: swaggerJsdoc.Options = {
           type: 'object',
           properties: {
             id: { type: 'string', example: 'clz9q1x4t0000s6h2attack01' },
-            address: { type: 'string', example: 'GAAZI4TCR3TY5OJHCTJC2A4QSY6CJWJH5IAJTGKIN2ER7LBNVKOCCWN' },
+            address: {
+              type: 'string',
+              example: 'GAAZI4TCR3TY5OJHCTJC2A4QSY6CJWJH5IAJTGKIN2ER7LBNVKOCCWN',
+            },
             totalProfitUsd: { type: 'number', example: 1520.4 },
             attackCount: { type: 'integer', example: 42 },
             favoriteType: {
               type: 'string',
               nullable: true,
-              enum: ['sandwich', 'flash_loan_attack', 'backrunning', 'displacement', 'jit_liquidity', 'cex_dex_arbitrage', 'cross_dex_arbitrage', 'liquidation', 'nft_mev'],
+              enum: [
+                'sandwich',
+                'flash_loan_attack',
+                'backrunning',
+                'displacement',
+                'jit_liquidity',
+                'cex_dex_arbitrage',
+                'cross_dex_arbitrage',
+                'liquidation',
+                'nft_mev',
+              ],
               example: 'sandwich',
             },
-            lastAttackAt: { type: 'string', format: 'date-time', nullable: true, example: '2026-06-19T07:24:26.000Z' },
-            firstSeen: { type: 'string', format: 'date-time', nullable: true, example: '2026-06-01T00:00:00.000Z' },
+            lastAttackAt: {
+              type: 'string',
+              format: 'date-time',
+              nullable: true,
+              example: '2026-06-19T07:24:26.000Z',
+            },
+            firstSeen: {
+              type: 'string',
+              format: 'date-time',
+              nullable: true,
+              example: '2026-06-01T00:00:00.000Z',
+            },
             isContract: { type: 'boolean', example: true },
-            tags: { type: 'array', items: { type: 'string' }, nullable: true, example: ['known-bot'] },
+            tags: {
+              type: 'array',
+              items: { type: 'string' },
+              nullable: true,
+              example: ['known-bot'],
+            },
             createdAt: { type: 'string', format: 'date-time', example: '2026-06-01T00:00:00.000Z' },
             updatedAt: { type: 'string', format: 'date-time', example: '2026-06-19T07:24:27.000Z' },
           },
@@ -696,7 +935,10 @@ const options: swaggerJsdoc.Options = {
           type: 'object',
           properties: {
             id: { type: 'string', example: 'clz9q1x4t0000s6h2protmev1' },
-            contractAddress: { type: 'string', example: 'CALLD5GHXR4QSTKHSWQEK4UVMHM4QHU4KZ5G4SBKWY7C7TXKZ45RJ4M5' },
+            contractAddress: {
+              type: 'string',
+              example: 'CALLD5GHXR4QSTKHSWQEK4UVMHM4QHU4KZ5G4SBKWY7C7TXKZ45RJ4M5',
+            },
             contractName: { type: 'string', nullable: true, example: 'StellarSwap Router' },
             score: { type: 'number', description: 'MEV-resistance score (0-100)', example: 72.5 },
             commitReveal: { type: 'boolean', example: false },
@@ -706,13 +948,21 @@ const options: swaggerJsdoc.Options = {
             encryptedTxs: { type: 'boolean', example: false },
             mevExtractedUsd: { type: 'number', example: 12500.5 },
             totalIncidents: { type: 'integer', example: 37 },
-            lastIncidentAt: { type: 'string', format: 'date-time', nullable: true, example: '2026-06-19T07:24:26.000Z' },
+            lastIncidentAt: {
+              type: 'string',
+              format: 'date-time',
+              nullable: true,
+              example: '2026-06-19T07:24:26.000Z',
+            },
             scoreHistory: {
               type: 'array',
               nullable: true,
               items: { type: 'object' },
               description: 'Score samples over time',
-              example: [{ score: 70, timestamp: '2026-06-01T00:00:00.000Z' }, { score: 72.5, timestamp: '2026-06-19T07:24:26.000Z' }],
+              example: [
+                { score: 70, timestamp: '2026-06-01T00:00:00.000Z' },
+                { score: 72.5, timestamp: '2026-06-19T07:24:26.000Z' },
+              ],
             },
             recommendations: {
               type: 'array',
@@ -731,17 +981,46 @@ const options: swaggerJsdoc.Options = {
             id: { type: 'string', example: 'clz9q1x4t0000s6h2mevalrt1' },
             alertType: {
               type: 'string',
-              enum: ['sandwich_in_progress', 'sandwich_detected', 'mev_spike', 'protocol_targeted', 'user_victim'],
+              enum: [
+                'sandwich_in_progress',
+                'sandwich_detected',
+                'mev_spike',
+                'protocol_targeted',
+                'user_victim',
+              ],
               example: 'sandwich_detected',
             },
-            severity: { type: 'string', enum: ['critical', 'high', 'medium', 'low'], example: 'high' },
-            txHash: { type: 'string', nullable: true, example: '3389e9f0f1a4e32477b1c0d9e8a6f5b4c3d2e1f0a9b8c7d6e5f40312233445566' },
-            victimAddress: { type: 'string', nullable: true, example: 'GBZXN7PIRZGNMHGA7MUUUF4GWPY5AYPV6LY4UV2GL6VJGIQRXFDNMADI' },
-            protocolAddress: { type: 'string', nullable: true, example: 'CALLD5GHXR4QSTKHSWQEK4UVMHM4QHU4KZ5G4SBKWY7C7TXKZ45RJ4M5' },
+            severity: {
+              type: 'string',
+              enum: ['critical', 'high', 'medium', 'low'],
+              example: 'high',
+            },
+            txHash: {
+              type: 'string',
+              nullable: true,
+              example: '3389e9f0f1a4e32477b1c0d9e8a6f5b4c3d2e1f0a9b8c7d6e5f40312233445566',
+            },
+            victimAddress: {
+              type: 'string',
+              nullable: true,
+              example: 'GBZXN7PIRZGNMHGA7MUUUF4GWPY5AYPV6LY4UV2GL6VJGIQRXFDNMADI',
+            },
+            protocolAddress: {
+              type: 'string',
+              nullable: true,
+              example: 'CALLD5GHXR4QSTKHSWQEK4UVMHM4QHU4KZ5G4SBKWY7C7TXKZ45RJ4M5',
+            },
             title: { type: 'string', example: 'Sandwich attack detected' },
-            description: { type: 'string', example: 'Victim swap was front-run and back-run on the same pool' },
+            description: {
+              type: 'string',
+              example: 'Victim swap was front-run and back-run on the same pool',
+            },
             estimatedLoss: { type: 'number', nullable: true, example: 180.6 },
-            recommendedAction: { type: 'string', nullable: true, example: 'Route transaction through private mempool' },
+            recommendedAction: {
+              type: 'string',
+              nullable: true,
+              example: 'Route transaction through private mempool',
+            },
             acknowledged: { type: 'boolean', example: false },
             createdAt: { type: 'string', format: 'date-time', example: '2026-06-19T07:24:26.000Z' },
             resolvedAt: { type: 'string', format: 'date-time', nullable: true, example: null },
@@ -764,7 +1043,10 @@ const options: swaggerJsdoc.Options = {
               items: {
                 type: 'object',
                 properties: {
-                  address: { type: 'string', example: 'GAAZI4TCR3TY5OJHCTJC2A4QSY6CJWJH5IAJTGKIN2ER7LBNVKOCCWN' },
+                  address: {
+                    type: 'string',
+                    example: 'GAAZI4TCR3TY5OJHCTJC2A4QSY6CJWJH5IAJTGKIN2ER7LBNVKOCCWN',
+                  },
                   totalProfitUsd: { type: 'number', example: 1520.4 },
                   attackCount: { type: 'integer', example: 42 },
                 },
@@ -775,7 +1057,10 @@ const options: swaggerJsdoc.Options = {
               items: {
                 type: 'object',
                 properties: {
-                  address: { type: 'string', example: 'GBZXN7PIRZGNMHGA7MUUUF4GWPY5AYPV6LY4UV2GL6VJGIQRXFDNMADI' },
+                  address: {
+                    type: 'string',
+                    example: 'GBZXN7PIRZGNMHGA7MUUUF4GWPY5AYPV6LY4UV2GL6VJGIQRXFDNMADI',
+                  },
                   totalLossUsd: { type: 'number', example: 180.6 },
                   incidentCount: { type: 'integer', example: 3 },
                 },
@@ -787,10 +1072,17 @@ const options: swaggerJsdoc.Options = {
                 type: 'object',
                 properties: {
                   id: { type: 'string', example: 'clz9q1x4t0000s6h2mevevt01' },
-                  txHash: { type: 'string', example: '3389e9f0f1a4e32477b1c0d9e8a6f5b4c3d2e1f0a9b8c7d6e5f40312233445566' },
+                  txHash: {
+                    type: 'string',
+                    example: '3389e9f0f1a4e32477b1c0d9e8a6f5b4c3d2e1f0a9b8c7d6e5f40312233445566',
+                  },
                   mevType: { type: 'string', example: 'sandwich' },
                   confidence: { type: 'number', example: 0.95 },
-                  createdAt: { type: 'string', format: 'date-time', example: '2026-06-19T07:24:26.000Z' },
+                  createdAt: {
+                    type: 'string',
+                    format: 'date-time',
+                    example: '2026-06-19T07:24:26.000Z',
+                  },
                 },
               },
             },
@@ -803,10 +1095,22 @@ const options: swaggerJsdoc.Options = {
           type: 'object',
           properties: {
             id: { type: 'string', example: 'clz9q1x4t0000s6h2schedop1' },
-            contractAddress: { type: 'string', example: 'CALLD5GHXR4QSTKHSWQEK4UVMHM4QHU4KZ5G4SBKWY7C7TXKZ45RJ4M5' },
+            contractAddress: {
+              type: 'string',
+              example: 'CALLD5GHXR4QSTKHSWQEK4UVMHM4QHU4KZ5G4SBKWY7C7TXKZ45RJ4M5',
+            },
             timerType: {
               type: 'string',
-              enum: ['TIMELOCK', 'VESTING', 'DEADLINE', 'COOLDOWN', 'RECURRING', 'TIME_WEIGHTED', 'MULTI_STAGE', 'ABSOLUTE'],
+              enum: [
+                'TIMELOCK',
+                'VESTING',
+                'DEADLINE',
+                'COOLDOWN',
+                'RECURRING',
+                'TIME_WEIGHTED',
+                'MULTI_STAGE',
+                'ABSOLUTE',
+              ],
               example: 'VESTING',
             },
             status: {
@@ -815,11 +1119,24 @@ const options: swaggerJsdoc.Options = {
               example: 'PENDING',
             },
             functionName: { type: 'string', example: 'release' },
-            description: { type: 'string', nullable: true, example: 'Cliff unlock for team allocation' },
-            triggerTime: { type: 'string', format: 'date-time', example: '2026-06-19T07:24:26.000Z' },
+            description: {
+              type: 'string',
+              nullable: true,
+              example: 'Cliff unlock for team allocation',
+            },
+            triggerTime: {
+              type: 'string',
+              format: 'date-time',
+              example: '2026-06-19T07:24:26.000Z',
+            },
             windowStart: { type: 'string', format: 'date-time', nullable: true, example: null },
             windowEnd: { type: 'string', format: 'date-time', nullable: true, example: null },
-            intervalSeconds: { type: 'integer', nullable: true, description: 'Recurrence interval in seconds', example: 86400 },
+            intervalSeconds: {
+              type: 'integer',
+              nullable: true,
+              description: 'Recurrence interval in seconds',
+              example: 86400,
+            },
             recurrenceCount: { type: 'integer', nullable: true, example: 12 },
             eventsExecuted: { type: 'integer', example: 0 },
             parameters: {
@@ -828,11 +1145,24 @@ const options: swaggerJsdoc.Options = {
               description: 'Operation-specific parameters',
               example: { amount: '1000000000', token: 'USDC' },
             },
-            sourceTx: { type: 'string', nullable: true, example: '3389e9f0f1a4e32477b1c0d9e8a6f5b4c3d2e1f0a9b8c7d6e5f40312233445566' },
+            sourceTx: {
+              type: 'string',
+              nullable: true,
+              example: '3389e9f0f1a4e32477b1c0d9e8a6f5b4c3d2e1f0a9b8c7d6e5f40312233445566',
+            },
             createdBy: { type: 'string', nullable: true, example: null },
-            detectedAt: { type: 'string', format: 'date-time', example: '2026-06-19T07:24:26.000Z' },
+            detectedAt: {
+              type: 'string',
+              format: 'date-time',
+              example: '2026-06-19T07:24:26.000Z',
+            },
             lastExecutedAt: { type: 'string', format: 'date-time', nullable: true, example: null },
-            nextTriggerAt: { type: 'string', format: 'date-time', nullable: true, example: '2026-06-19T07:24:26.000Z' },
+            nextTriggerAt: {
+              type: 'string',
+              format: 'date-time',
+              nullable: true,
+              example: '2026-06-19T07:24:26.000Z',
+            },
           },
         },
         // A token vesting schedule for a beneficiary (full record).
@@ -842,26 +1172,88 @@ const options: swaggerJsdoc.Options = {
           type: 'object',
           properties: {
             id: { type: 'string', example: 'clz9q1x4t0000s6h2vesting1' },
-            contractAddress: { type: 'string', example: 'CALLD5GHXR4QSTKHSWQEK4UVMHM4QHU4KZ5G4SBKWY7C7TXKZ45RJ4M5' },
-            tokenAddress: { type: 'string', example: 'CALLD5GHXR4QSTKHSWQEK4UVMHM4QHU4KZ5G4SBKWY7C7TXKZ45RJ4M5' },
+            contractAddress: {
+              type: 'string',
+              example: 'CALLD5GHXR4QSTKHSWQEK4UVMHM4QHU4KZ5G4SBKWY7C7TXKZ45RJ4M5',
+            },
+            tokenAddress: {
+              type: 'string',
+              example: 'CALLD5GHXR4QSTKHSWQEK4UVMHM4QHU4KZ5G4SBKWY7C7TXKZ45RJ4M5',
+            },
             tokenSymbol: { type: 'string', nullable: true, example: 'USDC' },
-            beneficiary: { type: 'string', example: 'GBZXN7PIRZGNMHGA7MUUUF4GWPY5AYPV6LY4UV2GL6VJGIQRXFDNMADI' },
-            totalAmount: { type: 'string', description: 'Decimal serialised as a string (raw base units)', example: '1000000000' },
-            cliffDate: { type: 'string', format: 'date-time', nullable: true, example: '2026-06-19T07:24:26.000Z' },
-            cliffAmount: { type: 'string', nullable: true, description: 'Decimal serialised as a string', example: '250000000' },
+            beneficiary: {
+              type: 'string',
+              example: 'GBZXN7PIRZGNMHGA7MUUUF4GWPY5AYPV6LY4UV2GL6VJGIQRXFDNMADI',
+            },
+            totalAmount: {
+              type: 'string',
+              description: 'Decimal serialised as a string (raw base units)',
+              example: '1000000000',
+            },
+            cliffDate: {
+              type: 'string',
+              format: 'date-time',
+              nullable: true,
+              example: '2026-06-19T07:24:26.000Z',
+            },
+            cliffAmount: {
+              type: 'string',
+              nullable: true,
+              description: 'Decimal serialised as a string',
+              example: '250000000',
+            },
             startDate: { type: 'string', format: 'date-time', example: '2026-06-01T00:00:00.000Z' },
             endDate: { type: 'string', format: 'date-time', example: '2027-06-01T00:00:00.000Z' },
-            vestingType: { type: 'string', description: 'e.g. linear | cliff | stepped', example: 'linear' },
+            vestingType: {
+              type: 'string',
+              description: 'e.g. linear | cliff | stepped',
+              example: 'linear',
+            },
             periodSeconds: { type: 'integer', nullable: true, example: 86400 },
-            amountPerPeriod: { type: 'string', nullable: true, description: 'Decimal serialised as a string', example: '2739726' },
+            amountPerPeriod: {
+              type: 'string',
+              nullable: true,
+              description: 'Decimal serialised as a string',
+              example: '2739726',
+            },
             periodsTotal: { type: 'integer', nullable: true, example: 365 },
-            nextUnlockDate: { type: 'string', format: 'date-time', nullable: true, example: '2026-06-19T07:24:26.000Z' },
-            nextUnlockAmount: { type: 'string', nullable: true, description: 'Decimal serialised as a string', example: '2739726' },
-            totalUnlocked: { type: 'string', description: 'Decimal serialised as a string', example: '500000000' },
-            totalClaimed: { type: 'string', description: 'Decimal serialised as a string', example: '250000000' },
-            status: { type: 'string', description: 'e.g. active | completed | cancelled', example: 'active' },
-            sourceTx: { type: 'string', nullable: true, example: '3389e9f0f1a4e32477b1c0d9e8a6f5b4c3d2e1f0a9b8c7d6e5f40312233445566' },
-            detectedAt: { type: 'string', format: 'date-time', example: '2026-06-19T07:24:26.000Z' },
+            nextUnlockDate: {
+              type: 'string',
+              format: 'date-time',
+              nullable: true,
+              example: '2026-06-19T07:24:26.000Z',
+            },
+            nextUnlockAmount: {
+              type: 'string',
+              nullable: true,
+              description: 'Decimal serialised as a string',
+              example: '2739726',
+            },
+            totalUnlocked: {
+              type: 'string',
+              description: 'Decimal serialised as a string',
+              example: '500000000',
+            },
+            totalClaimed: {
+              type: 'string',
+              description: 'Decimal serialised as a string',
+              example: '250000000',
+            },
+            status: {
+              type: 'string',
+              description: 'e.g. active | completed | cancelled',
+              example: 'active',
+            },
+            sourceTx: {
+              type: 'string',
+              nullable: true,
+              example: '3389e9f0f1a4e32477b1c0d9e8a6f5b4c3d2e1f0a9b8c7d6e5f40312233445566',
+            },
+            detectedAt: {
+              type: 'string',
+              format: 'date-time',
+              example: '2026-06-19T07:24:26.000Z',
+            },
           },
         },
         // A queued governance timelock operation (full record).
@@ -869,11 +1261,21 @@ const options: swaggerJsdoc.Options = {
           type: 'object',
           properties: {
             id: { type: 'string', example: 'clz9q1x4t0000s6h2govtl001' },
-            contractAddress: { type: 'string', example: 'CALLD5GHXR4QSTKHSWQEK4UVMHM4QHU4KZ5G4SBKWY7C7TXKZ45RJ4M5' },
+            contractAddress: {
+              type: 'string',
+              example: 'CALLD5GHXR4QSTKHSWQEK4UVMHM4QHU4KZ5G4SBKWY7C7TXKZ45RJ4M5',
+            },
             proposalId: { type: 'string', nullable: true, example: 'prop-42' },
             title: { type: 'string', nullable: true, example: 'Upgrade router to v2' },
-            description: { type: 'string', nullable: true, example: 'Migrate liquidity router to the audited v2 implementation' },
-            proposer: { type: 'string', example: 'GBZXN7PIRZGNMHGA7MUUUF4GWPY5AYPV6LY4UV2GL6VJGIQRXFDNMADI' },
+            description: {
+              type: 'string',
+              nullable: true,
+              example: 'Migrate liquidity router to the audited v2 implementation',
+            },
+            proposer: {
+              type: 'string',
+              example: 'GBZXN7PIRZGNMHGA7MUUUF4GWPY5AYPV6LY4UV2GL6VJGIQRXFDNMADI',
+            },
             executor: { type: 'string', nullable: true, example: null },
             targets: {
               type: 'array',
@@ -893,15 +1295,41 @@ const options: swaggerJsdoc.Options = {
               description: 'Encoded call payloads',
               example: ['AAAADwAAAAh1cGdyYWRl'],
             },
-            operationHash: { type: 'string', nullable: true, example: 'e5f40312233445566778899aabbccddeeff00112233445566778899aabbccddee' },
+            operationHash: {
+              type: 'string',
+              nullable: true,
+              example: 'e5f40312233445566778899aabbccddeeff00112233445566778899aabbccddee',
+            },
             queuedAt: { type: 'string', format: 'date-time', example: '2026-06-17T07:24:26.000Z' },
-            minDelay: { type: 'integer', description: 'Minimum timelock delay in seconds', example: 172800 },
-            executionTime: { type: 'string', format: 'date-time', example: '2026-06-19T07:24:26.000Z' },
-            expiryTime: { type: 'string', format: 'date-time', nullable: true, example: '2026-06-26T07:24:26.000Z' },
-            status: { type: 'string', description: 'e.g. queued | executable | executed | expired | cancelled', example: 'queued' },
+            minDelay: {
+              type: 'integer',
+              description: 'Minimum timelock delay in seconds',
+              example: 172800,
+            },
+            executionTime: {
+              type: 'string',
+              format: 'date-time',
+              example: '2026-06-19T07:24:26.000Z',
+            },
+            expiryTime: {
+              type: 'string',
+              format: 'date-time',
+              nullable: true,
+              example: '2026-06-26T07:24:26.000Z',
+            },
+            status: {
+              type: 'string',
+              description: 'e.g. queued | executable | executed | expired | cancelled',
+              example: 'queued',
+            },
             executedTx: { type: 'string', nullable: true, example: null },
             cancelledBy: { type: 'string', nullable: true, example: null },
-            gracePeriod: { type: 'integer', nullable: true, description: 'Grace period in seconds after executionTime', example: 604800 },
+            gracePeriod: {
+              type: 'integer',
+              nullable: true,
+              description: 'Grace period in seconds after executionTime',
+              example: 604800,
+            },
           },
         },
         // A scheduled cron job for a contract function (full record).
@@ -909,7 +1337,10 @@ const options: swaggerJsdoc.Options = {
           type: 'object',
           properties: {
             id: { type: 'string', example: 'clz9q1x4t0000s6h2cronjob1' },
-            contractAddress: { type: 'string', example: 'CALLD5GHXR4QSTKHSWQEK4UVMHM4QHU4KZ5G4SBKWY7C7TXKZ45RJ4M5' },
+            contractAddress: {
+              type: 'string',
+              example: 'CALLD5GHXR4QSTKHSWQEK4UVMHM4QHU4KZ5G4SBKWY7C7TXKZ45RJ4M5',
+            },
             cronExpression: { type: 'string', example: '0 0 * * *' },
             functionName: { type: 'string', example: 'distribute' },
             functionArgs: {
@@ -918,8 +1349,18 @@ const options: swaggerJsdoc.Options = {
               example: { recipient: 'GBZXN7PIRZGNMHGA7MUUUF4GWPY5AYPV6LY4UV2GL6VJGIQRXFDNMADI' },
             },
             description: { type: 'string', nullable: true, example: 'Daily distribution' },
-            lastRunAt: { type: 'string', format: 'date-time', nullable: true, example: '2026-06-18T00:00:00.000Z' },
-            nextRunAt: { type: 'string', format: 'date-time', nullable: true, example: '2026-06-20T00:00:00.000Z' },
+            lastRunAt: {
+              type: 'string',
+              format: 'date-time',
+              nullable: true,
+              example: '2026-06-18T00:00:00.000Z',
+            },
+            nextRunAt: {
+              type: 'string',
+              format: 'date-time',
+              nullable: true,
+              example: '2026-06-20T00:00:00.000Z',
+            },
             totalRuns: { type: 'integer', example: 18 },
             successfulRuns: { type: 'integer', example: 17 },
             failedRuns: { type: 'integer', example: 1 },
@@ -935,12 +1376,25 @@ const options: swaggerJsdoc.Options = {
           properties: {
             id: { type: 'string', example: 'clz9q1x4t0000s6h2cronex01' },
             cronJobId: { type: 'string', example: 'clz9q1x4t0000s6h2cronjob1' },
-            executedAt: { type: 'string', format: 'date-time', example: '2026-06-19T07:24:26.000Z' },
+            executedAt: {
+              type: 'string',
+              format: 'date-time',
+              example: '2026-06-19T07:24:26.000Z',
+            },
             success: { type: 'boolean', example: true },
-            txHash: { type: 'string', nullable: true, example: '3389e9f0f1a4e32477b1c0d9e8a6f5b4c3d2e1f0a9b8c7d6e5f40312233445566' },
+            txHash: {
+              type: 'string',
+              nullable: true,
+              example: '3389e9f0f1a4e32477b1c0d9e8a6f5b4c3d2e1f0a9b8c7d6e5f40312233445566',
+            },
             errorMessage: { type: 'string', nullable: true, example: null },
             gasUsed: { type: 'integer', nullable: true, example: 24500000 },
-            duration: { type: 'integer', nullable: true, description: 'Execution duration in milliseconds', example: 240 },
+            duration: {
+              type: 'integer',
+              nullable: true,
+              description: 'Execution duration in milliseconds',
+              example: 240,
+            },
           },
         },
         // An alert raised for a scheduled operation (full record).
@@ -949,11 +1403,26 @@ const options: swaggerJsdoc.Options = {
           properties: {
             id: { type: 'string', example: 'clz9q1x4t0000s6h2tmalrt01' },
             scheduledOpId: { type: 'string', nullable: true, example: 'clz9q1x4t0000s6h2schedop1' },
-            alertType: { type: 'string', description: 'e.g. upcoming | overdue | executed | failed', example: 'upcoming' },
-            severity: { type: 'string', description: 'e.g. info | warning | critical', example: 'warning' },
+            alertType: {
+              type: 'string',
+              description: 'e.g. upcoming | overdue | executed | failed',
+              example: 'upcoming',
+            },
+            severity: {
+              type: 'string',
+              description: 'e.g. info | warning | critical',
+              example: 'warning',
+            },
             title: { type: 'string', example: 'Vesting unlock in 24h' },
-            message: { type: 'string', example: 'Scheduled VESTING operation release triggers in 24 hours' },
-            triggerTime: { type: 'string', format: 'date-time', example: '2026-06-19T07:24:26.000Z' },
+            message: {
+              type: 'string',
+              example: 'Scheduled VESTING operation release triggers in 24 hours',
+            },
+            triggerTime: {
+              type: 'string',
+              format: 'date-time',
+              example: '2026-06-19T07:24:26.000Z',
+            },
             delivered: { type: 'boolean', example: false },
             acknowledged: { type: 'boolean', example: false },
           },
