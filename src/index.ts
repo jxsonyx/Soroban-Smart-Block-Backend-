@@ -24,6 +24,8 @@ import { errorHandler } from './middleware/errorHandler';
 import { logger } from './logger';
 import { feedOrchestrator } from './feed/orchestrator';
 import { startPriceUpdater } from './services/pricing/price-updater';
+import { startNftCollectionDiscovery } from './indexer/nft-collection-discovery';
+import { startMetadataRefreshJob } from './indexer/nft-metadata-fetcher';
 
 // Stub functions for features requiring missing Prisma schema models
 function attachPrivacyWebSocket(_server: unknown): void {
@@ -120,6 +122,20 @@ async function main() {
     logger.info('Price updater started');
   } catch (err) {
     logger.warn('Price updater failed to start', { error: String(err) });
+  }
+
+  // Start NFT collection discovery + metadata refresh
+  if (!process.env.DISABLE_INDEXER) {
+    try {
+      startNftCollectionDiscovery();
+    } catch (err) {
+      logger.warn('NFT collection discovery failed to start', { error: String(err) });
+    }
+    try {
+      startMetadataRefreshJob();
+    } catch (err) {
+      logger.warn('NFT metadata refresh job failed to start', { error: String(err) });
+    }
   }
 
   // Initialize Feed Orchestrator with WebSocket support
